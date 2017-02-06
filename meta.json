@@ -1,14 +1,19 @@
 {
   "meta": {
-    "name": "Project Strokes",
-    "project": "project-strokes",
+    "name": "project-strokes-server",
+    "description": "Project Strokes - Server",
     "version": "0.1.0",
-    "description": "",
     "copyright": "Copyright \u00A9 2017",
     "author": {
       "name": "cypherix93",
-      "url": "https://github.com/cypherix93/project-strokes"
-    }
+      "url": "https://github.com/cypherix93"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/albavulpes/project-strokes-server.git"
+    },
+    "private": true,
+    "license": "UNLICENSED"
   },
   "config": {
     "ports": {

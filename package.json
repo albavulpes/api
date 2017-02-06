@@ -1,11 +1,11 @@
 {
-  "name": "project-strokes",
-  "description": "",
+  "name": "project-strokes-server",
+  "description": "Project Strokes - Server",
   "version": "0.1.0",
   "copyright": "Copyright © 2017",
   "author": {
     "name": "cypherix93",
-    "url": "https://github.com/cypherix93/project-strokes"
+    "url": "https://github.com/cypherix93"
   },
   "repository": {
     "type": "git",
