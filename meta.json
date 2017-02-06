@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "name": "Project Strokes",
+    "project": "project-strokes",
+    "version": "0.1.0",
+    "description": "",
+    "copyright": "Copyright \u00A9 2017",
+    "author": {
+      "name": "cypherix93",
+      "url": "https://github.com/cypherix93/project-strokes"
+    }
+  },
+  "config": {
+    "ports": {
+      "client": 7970,
+      "server": 7950
+    }
+  }
+}
