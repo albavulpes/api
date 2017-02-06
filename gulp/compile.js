@@ -16,7 +16,7 @@ module.exports = function (gulp, plugins, paths, project)
             .pipe(tsProject());
         
         var tsTask = tsResult
-            .pipe(plugins.debug({title: "[server] compiled:"}))
+            .pipe(plugins.debug({title: "compiled:"}))
             .pipe(gulp.dest(serverDest));
         
         var filesToCopy = [
