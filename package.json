@@ -73,7 +73,7 @@
     "merge-stream": "^1.0.0",
     "run-sequence": "^1.1.5",
     "streamqueue": "^1.1.1",
-    "typescript": "^2.1.5"
+    "typescript": "^2.1.6"
   },
   "scripts": {
     "gulp": "./node_modules/.bin/gulp",
