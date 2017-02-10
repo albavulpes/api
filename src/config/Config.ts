@@ -8,7 +8,7 @@ const rootPath = path.join(__dirname, "..");
 
 export const CONFIG: IAppConfig = {
     rootPath: rootPath,
-    port: isDevEnv ? 7950 : 80,
+    port: process.env.PORT,
     cors: {
         origin: process.env.CLIENT_URL || true,
         credentials: true
@@ -17,10 +17,10 @@ export const CONFIG: IAppConfig = {
         level: isDevEnv ? "debug" : "info"
     },
     jwt: {
-        secret: process.env.JWT_SECRET || "asdfghjkl",
+        secret: process.env.JWT_SECRET,
         expiryInMinutes: 30,
         cookie: {
-            name: process.env.JWT_COOKIE || "project.elegantstrokes.presence",
+            name: process.env.JWT_COOKIE,
             options: {
                 httpOnly: true,
                 secure: !isDevEnv,
@@ -29,9 +29,9 @@ export const CONFIG: IAppConfig = {
         }
     },
     db: {
-        connectionString: "mongodb://localhost:27017/project-elegant-strokes"
+        url: process.env.DATABASE_URL
     },
     settings: {
-        fileStoragePath: process.env.SETTINGS_STORAGE_PATH || path.resolve("/data/project-strokes/")
+        storagePath: path.resolve(process.env.STORAGE_PATH)
     }
 };

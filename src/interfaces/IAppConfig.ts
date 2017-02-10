@@ -22,7 +22,7 @@ export interface IAppConfig
         }
     };
     db: {
-        connectionString: string,
+        url: string,
         username?:string,
         password?:string
     };
