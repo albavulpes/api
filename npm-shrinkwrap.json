@@ -26,6 +26,12 @@
       "resolved": "https://registry.npmjs.org/@types/cors/-/cors-2.8.0.tgz",
       "dev": true
     },
+    "@types/dotenv": {
+      "version": "2.0.20",
+      "from": "@types/dotenv@latest",
+      "resolved": "https://registry.npmjs.org/@types/dotenv/-/dotenv-2.0.20.tgz",
+      "dev": true
+    },
     "@types/express": {
       "version": "4.0.35",
       "from": "@types/express@>=4.0.33 <5.0.0",
@@ -519,6 +525,11 @@
       "version": "1.1.2",
       "from": "dot-case@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/dot-case/-/dot-case-1.1.2.tgz"
+    },
+    "dotenv": {
+      "version": "4.0.0",
+      "from": "dotenv@latest",
+      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-4.0.0.tgz"
     },
     "duplexer": {
       "version": "0.1.1",

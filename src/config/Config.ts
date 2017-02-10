@@ -1,10 +1,16 @@
 import path = require("path");
+import dotenv = require("dotenv");
 import {IAppConfig} from "../interfaces/IAppConfig";
+
+const rootPath = path.join(__dirname, "..");
 
 const env = process.env.NODE_ENV || "development";
 const isDevEnv = (env === "development");
 
-const rootPath = path.join(__dirname, "..");
+// If we are in development mode, set up dotenv
+// NOTE: Environment variables will be autoloaded from the environment when this is deployed to e.g. testing, staging, production etc.
+if (isDevEnv)
+    dotenv.config();
 
 export const CONFIG: IAppConfig = {
     rootPath: rootPath,
