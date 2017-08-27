@@ -1,11 +1,11 @@
-import path = require("path");
-import dotenv = require("dotenv");
-import {IAppConfig} from "../interfaces/IAppConfig";
+import path = require('path');
+import dotenv = require('dotenv');
+import {IAppConfig} from '../interfaces/IAppConfig';
 
-const rootPath = path.join(__dirname, "..");
+const rootPath = path.join(__dirname, '..');
 
-const env = process.env.NODE_ENV || "development";
-const isDevEnv = (env === "development");
+const env = process.env.NODE_ENV || 'development';
+const isDevEnv = (env === 'development');
 
 // If we are in development mode, set up dotenv
 // NOTE: Environment variables will be autoloaded from the environment when this is deployed to e.g. testing, staging, production etc.
@@ -20,7 +20,7 @@ export const CONFIG: IAppConfig = {
         credentials: true
     },
     winston: {
-        level: isDevEnv ? "debug" : "info"
+        level: isDevEnv ? 'debug' : 'info'
     },
     jwt: {
         secret: process.env.JWT_SECRET,

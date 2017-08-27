@@ -1,5 +1,4 @@
-export interface IAppConfig
-{
+export interface IAppConfig {
     rootPath: string;
     port: number;
     cors: {
@@ -23,8 +22,8 @@ export interface IAppConfig
     };
     db: {
         url: string,
-        username?:string,
-        password?:string
+        username?: string,
+        password?: string
     };
     settings?: any;
 }
