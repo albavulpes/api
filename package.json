@@ -48,6 +48,7 @@
     "@types/node-uuid": "0.0.28",
     "@types/passport": "^0.3.2",
     "@types/passport-local": "^1.0.29",
+    "@types/rx": "^4.1.1",
     "@types/shortid": "^0.0.29",
     "@types/validator": "^6.2.2",
     "@types/winston": "^2.2.0",

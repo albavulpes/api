@@ -20,7 +20,7 @@ export class DatabaseBootstrapper {
 
         return await new Promise<void>((resolve, reject) => {
             // Connect to mongodb to set up the session factory
-            MongoClient.connect(CONFIG.db.connectionString, (err, db) => {
+            MongoClient.connect(CONFIG.db.url, (err, db) => {
                 if (err) {
                     reject(err);
                 }

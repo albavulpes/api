@@ -2,7 +2,7 @@ export interface IAppConfig {
     rootPath: string;
     port: number;
     cors: {
-        origin: string | string[],
+        origin: string | string[] | boolean,
         credentials: boolean
     };
     winston: {

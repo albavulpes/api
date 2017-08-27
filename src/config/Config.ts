@@ -14,7 +14,7 @@ if (isDevEnv)
 
 export const CONFIG: IAppConfig = {
     rootPath: rootPath,
-    port: process.env.PORT,
+    port: parseInt(process.env.PORT),
     cors: {
         origin: process.env.CLIENT_URL || true,
         credentials: true
