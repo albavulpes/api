@@ -1,46 +1,42 @@
-import {IPayload} from "../../../interfaces/IPayload";
-import {IRestWorker} from "../../../interfaces/IRestWorker";
-import {SessionManager} from "../../../database/SessionManager";
-import {Chapter} from "../../../database/models/comic/Chapter";
-import {Page} from "../../../database/models/comic/Page";
+import {IPayload} from '../../../interfaces/IPayload';
+import {IRestWorker} from '../../../interfaces/IRestWorker';
+import {SessionManager} from '../../../database/SessionManager';
+import {Chapter} from '../../../database/models/comic/Chapter';
+import {Page} from '../../../database/models/comic/Page';
 
-class Worker implements IRestWorker<Page>
-{
-    public async create(body: Page): Promise<IPayload<Page>>
-    {
+class Worker implements IRestWorker<Page> {
+
+    public async create(body: Page): Promise<IPayload<Page>> {
         // Validate request
-        if (!body.chapterId)
-        {
+        if (!body.chapterId) {
             return {
                 success: false,
-                message: "Chapter information given is invalid. Cannot create Page."
+                message: 'Chapter information given is invalid. Cannot create Page.'
             };
         }
 
-        var session = SessionManager.createSession();
+        const session = SessionManager.createSession();
 
         // Get the proper parent
-        var arc = await session.query(Chapter).findOne({_id: body.chapterId}).asPromise();
+        let arc = await session.query(Chapter).findOne({_id: body.chapterId}).asPromise();
 
-        if (!arc)
-        {
+        if (!arc) {
             return {
                 success: false,
-                message: "Requested Chapter does not exist. Cannot create Page."
+                message: 'Requested Chapter does not exist. Cannot create Page.'
             };
         }
 
         // Get the number of seasons available for this comic to set the season number
-        var count = await session.query(Page).count({chapterId: body.chapterId}).asPromise();
+        const count = await session.query(Page).count({chapterId: body.chapterId}).asPromise();
 
         // Create a new season
-        var page = new Page();
+        const page = new Page();
         page.chapterId = body.chapterId;
         page.number = count + 1;
 
         // Save the season
-        await new Promise((resolve, reject) =>
-        {
+        await new Promise((resolve, reject) => {
             session.save(page, () => resolve());
             session.flush();
         });
@@ -53,17 +49,15 @@ class Worker implements IRestWorker<Page>
         };
     }
 
-    public async read(id: string): Promise<IPayload<Page>>
-    {
-        var session = SessionManager.createSession();
-        var chapter = await session.query(Page).findOne({_id: id}).asPromise();
+    public async read(id: string): Promise<IPayload<Page>> {
+        const session = SessionManager.createSession();
+        let chapter = await session.query(Page).findOne({_id: id}).asPromise();
 
-        if (!chapter)
-        {
+        if (!chapter) {
             return {
                 success: false,
                 message: `Page with ID '${id}' does not exist.`
-            }
+            };
         }
 
         session.close();
@@ -71,26 +65,23 @@ class Worker implements IRestWorker<Page>
         return {
             success: true,
             data: chapter
-        }
+        };
     }
 
-    public async update(id: string, body): Promise<IPayload<Page>>
-    {
+    public async update(id: string, body): Promise<IPayload<Page>> {
         return undefined;
     }
 
-    public async remove(id: string): Promise<IPayload<Page>>
-    {
+    public async remove(id: string): Promise<IPayload<Page>> {
         return undefined;
     }
 
-    public async getPagesForChapter(chapterId: string, page = 1, show = 10): Promise<IPayload<Page[]>>
-    {
-        var session = SessionManager.createSession();
+    public async getPagesForChapter(chapterId: string, page = 1, show = 10): Promise<IPayload<Page[]>> {
+        const session = SessionManager.createSession();
 
-        var comics = await session.query(Page)
+        const comics = await session.query(Page)
             .findAll({chapterId})
-            .sort("title", 1)
+            .sort('title', 1)
             .skip(show * (page - 1))
             .limit(show)
             .asPromise();
@@ -100,7 +91,7 @@ class Worker implements IRestWorker<Page>
         return {
             success: true,
             data: comics
-        }
+        };
     }
 }
 

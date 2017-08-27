@@ -1,10 +1,9 @@
-import {Field, Entity, ElementType} from "hydrate-mongodb";
-import {Model} from "../../base/Model";
-import {Page} from "./Page";
+import {Field, Entity, ElementType} from 'hydrate-mongodb';
+import {Model} from '../../base/Model';
+import {Page} from './Page';
 
 @Entity()
-export class Chapter extends Model
-{
+export class Chapter extends Model {
     @Field()
     public arcId: string;
 
@@ -12,5 +11,5 @@ export class Chapter extends Model
     public number: number;
 
     @Field()
-    public title:string;
+    public title: string;
 }

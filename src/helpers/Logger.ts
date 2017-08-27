@@ -1,5 +1,5 @@
-import winston = require("winston");
-import {CONFIG} from "../config/Config";
+import winston = require('winston');
+import {CONFIG} from '../config/Config';
 
 winston.level = CONFIG.winston.level;
 

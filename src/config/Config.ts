@@ -1,10 +1,10 @@
-import path = require("path");
-import {IAppConfig} from "../interfaces/IAppConfig";
+import path = require('path');
+import {IAppConfig} from '../interfaces/IAppConfig';
 
-const env = process.env.NODE_ENV || "development";
-const isDevEnv = (env === "development");
+const env = process.env.NODE_ENV || 'development';
+const isDevEnv = (env === 'development');
 
-const rootPath = path.join(__dirname, "..");
+const rootPath = path.join(__dirname, '..');
 
 export const CONFIG: IAppConfig = {
     rootPath: rootPath,
@@ -14,13 +14,13 @@ export const CONFIG: IAppConfig = {
         credentials: true
     },
     winston: {
-        level: isDevEnv ? "debug" : "info"
+        level: isDevEnv ? 'debug' : 'info'
     },
     jwt: {
-        secret: process.env.JWT_SECRET || "asdfghjkl",
+        secret: process.env.JWT_SECRET || 'asdfghjkl',
         expiryInMinutes: 30,
         cookie: {
-            name: process.env.JWT_COOKIE || "project.elegantstrokes.presence",
+            name: process.env.JWT_COOKIE || 'project.elegantstrokes.presence',
             options: {
                 httpOnly: true,
                 secure: !isDevEnv,
@@ -29,9 +29,9 @@ export const CONFIG: IAppConfig = {
         }
     },
     db: {
-        connectionString: "mongodb://localhost:27017/project-elegant-strokes"
+        connectionString: 'mongodb://localhost:27017/project-elegant-strokes'
     },
     settings: {
-        fileStoragePath: process.env.SETTINGS_STORAGE_PATH || path.resolve("/data/project-strokes/")
+        fileStoragePath: process.env.SETTINGS_STORAGE_PATH || path.resolve('/data/project-strokes/')
     }
 };

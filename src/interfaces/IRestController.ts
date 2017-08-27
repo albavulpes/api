@@ -1,7 +1,6 @@
-import {Request, Response} from "express-serve-static-core";
+import {Request, Response} from 'express-serve-static-core';
 
-export interface IRestController
-{
+export interface IRestController {
     create(req: Request, res: Response, ...args);
 
     read(req: Request, res: Response, id: string, ...args);

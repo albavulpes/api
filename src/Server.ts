@@ -1,20 +1,18 @@
-import * as express from "express";
+import * as express from 'express';
 
-import {CONFIG} from "./config/Config";
-import {LOGGER} from "./helpers/Logger";
-import {Bootstrap} from "./startup/Bootstrap";
+import {CONFIG} from './config/Config';
+import {LOGGER} from './helpers/Logger';
+import {Bootstrap} from './startup/Bootstrap';
 
-var app = express();
+const app = express();
 
 // Bootstrap the application and couple the middlewares
 Bootstrap.init(app)
-    .then(() =>
-    {
+    .then(() => {
         // Start up the server after bootstrap has finished
-        LOGGER.info("Starting Server...");
+        LOGGER.info('Starting Server...');
 
-        app.listen(CONFIG.port, function ()
-        {
-            LOGGER.info("Magic is happening at http://localhost:" + CONFIG.port);
+        app.listen(CONFIG.port, function () {
+            LOGGER.info('Magic is happening at http://localhost:' + CONFIG.port);
         });
     });

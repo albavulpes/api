@@ -1,15 +1,14 @@
-import {JsonController, Post, Req, Res, UseBefore, Get} from "routing-controllers";
-import {authorize, login, register} from "../../middlewares/Authorize";
-import {AuthWorker} from "../../workers/AuthWorker";
-import {AuthHelper} from "../../../helpers/AuthHelper";
+import {JsonController, Post, Req, Res, UseBefore, Get} from 'routing-controllers';
+import {authorize, login, register} from '../../middlewares/Authorize';
+import {AuthWorker} from '../../workers/AuthWorker';
+import {AuthHelper} from '../../../helpers/AuthHelper';
 
-@JsonController("/auth")
-export class AuthController
-{
-    @Post("/register")
+@JsonController('/auth')
+export class AuthController {
+
+    @Post('/register')
     @UseBefore(register())
-    public async register(@Req() request)
-    {
+    public async register(@Req() request) {
         // request.user should be available here
         return {
             success: true,
@@ -20,10 +19,9 @@ export class AuthController
         };
     }
 
-    @Post("/login")
+    @Post('/login')
     @UseBefore(login())
-    public async login(@Req() request)
-    {
+    public async login(@Req() request) {
         // request.user should be available here
         return {
             success: true,
@@ -34,10 +32,9 @@ export class AuthController
         };
     }
 
-    @Post("/logout")
+    @Post('/logout')
     @UseBefore(authorize())
-    public async logout(@Req() request, @Res() response)
-    {
+    public async logout(@Req() request, @Res() response) {
         request.logout();
 
         AuthHelper.clearAuthCookie(response);
@@ -47,9 +44,8 @@ export class AuthController
         };
     }
 
-    @Get("/me")
-    public async me(@Req() request)
-    {
+    @Get('/me')
+    public async me(@Req() request) {
         return {
             success: true,
             data: request.user

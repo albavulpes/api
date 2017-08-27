@@ -1,68 +1,58 @@
-import Q = require("q");
-import shortid = require("shortid");
-import {MongoClient} from "mongodb";
-import {Configuration, AnnotationMappingProvider, IdentityGenerator} from "hydrate-mongodb";
+import * as shortid from 'shortid';
 
-import {LOGGER} from "../../helpers/Logger";
-import {CONFIG} from "../../config/Config";
-import {initSessionManager} from "../../database/SessionManager";
+import {MongoClient} from 'mongodb';
+import {Configuration, AnnotationMappingProvider, IdentityGenerator} from 'hydrate-mongodb';
 
-import * as models from "../../database/models/Models";
+import {LOGGER} from '../../helpers/Logger';
+import {CONFIG} from '../../config/Config';
+import {initSessionManager} from '../../database/SessionManager';
 
-export class DatabaseBootstrapper
-{
-    public static async init()
-    {
-        LOGGER.info("Initiating MongoDB...");
+import * as models from '../../database/models/Models';
+
+export class DatabaseBootstrapper {
+    public static async init(): Promise<void> {
+        LOGGER.info('Initiating MongoDB...');
 
         // Initiate the configuration for Hydrate to understand our models
-        var config = new Configuration();
+        const config = new Configuration();
         config.identityGenerator = new ShortIdGenerator();
         config.addMapping(new AnnotationMappingProvider(models));
 
-        var def = Q.defer();
-
-        // Connect to mongodb to set up the session factory
-        MongoClient.connect(CONFIG.db.connectionString, (err, db) =>
-        {
-            if (err)
-            {
-                def.reject(err);
-            }
-
-            config.createSessionFactory(db, (err, sessionFactory) =>
-            {
-                if (err)
-                {
-                    def.reject(err);
+        return await new Promise<void>((resolve, reject) => {
+            // Connect to mongodb to set up the session factory
+            MongoClient.connect(CONFIG.db.connectionString, (err, db) => {
+                if (err) {
+                    reject(err);
                 }
 
-                initSessionManager(sessionFactory);
+                config.createSessionFactory(db, (err, sessionFactory) => {
+                    if (err) {
+                        reject(err);
+                    }
 
-                def.resolve(true);
+                    initSessionManager(sessionFactory);
+
+                    resolve();
+                });
             });
         });
-
-        return await def.promise;
     }
 }
 
-class ShortIdGenerator implements IdentityGenerator
-{
-    generate(): string
-    {
+class ShortIdGenerator implements IdentityGenerator {
+    generate(): string {
         return shortid.generate();
     }
-    validate(value: string): boolean
-    {
+
+    validate(value: string): boolean {
         return !!value;
     }
-    fromString(text: string): any
-    {
+
+    fromString(text: string): any {
         return text;
     }
-    areEqual(first: any, second: any): boolean
-    {
+
+    areEqual(first: any, second: any): boolean {
         return first === second;
     }
 }

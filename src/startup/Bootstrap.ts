@@ -1,16 +1,14 @@
-import * as bodyParser from "body-parser";
+import * as bodyParser from 'body-parser';
 
-import {Express} from "express";
-import {DatabaseBootstrapper} from "./db/DatabaseBootstrapper";
-import {AuthBootstrapper} from "./auth/AuthBootstrapper";
-import {RoutingBootstrapper} from "./routes/RoutingBootstrapper";
-import {LOGGER} from "../helpers/Logger";
+import {Express} from 'express';
+import {DatabaseBootstrapper} from './db/DatabaseBootstrapper';
+import {AuthBootstrapper} from './auth/AuthBootstrapper';
+import {RoutingBootstrapper} from './routes/RoutingBootstrapper';
+import {LOGGER} from '../helpers/Logger';
 
-export class Bootstrap
-{
-    public static async init(app: Express)
-    {
-        LOGGER.info("Bootstrapping application...");
+export class Bootstrap {
+    public static async init(app: Express) {
+        LOGGER.info('Bootstrapping application...');
 
         // Configure express middlewares
         app.use(bodyParser.json());

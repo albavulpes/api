@@ -1,9 +1,8 @@
-export interface IAppConfig
-{
+export interface IAppConfig {
     rootPath: string;
     port: number;
     cors: {
-        origin: string | string[],
+        origin: string | string[] | boolean,
         credentials: boolean
     };
     winston: {
@@ -23,8 +22,8 @@ export interface IAppConfig
     };
     db: {
         connectionString: string,
-        username?:string,
-        password?:string
+        username?: string,
+        password?: string
     };
     settings?: any;
 }

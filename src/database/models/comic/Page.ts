@@ -1,15 +1,14 @@
-import {Field, Entity, ElementType} from "hydrate-mongodb";
-import {Model} from "../../base/Model";
+import {Field, Entity, ElementType} from 'hydrate-mongodb';
+import {Model} from '../../base/Model';
 
 @Entity()
-export class Page extends Model
-{
+export class Page extends Model {
     @Field()
     public chapterId: string;
 
     @Field()
-    public number:number;
+    public number: number;
 
     @Field()
-    public imageId:string;
+    public imageId: string;
 }

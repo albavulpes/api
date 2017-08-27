@@ -1,9 +1,8 @@
-import {Field, Entity, Embeddable, Type} from "hydrate-mongodb";
-import {Model} from "../../base/Model";
+import {Field, Entity, Embeddable, Type} from 'hydrate-mongodb';
+import {Model} from '../../base/Model';
 
 @Embeddable()
-export class Passport extends Model
-{
+export class Passport extends Model {
     @Field()
     public protocol: string;
 

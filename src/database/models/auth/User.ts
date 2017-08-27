@@ -1,10 +1,9 @@
-import {Field, Entity, ElementType, Fetch, FetchType} from "hydrate-mongodb";
-import {Model} from "../../base/Model";
-import {Passport} from "./Passport";
+import {Field, Entity, ElementType, Fetch, FetchType} from 'hydrate-mongodb';
+import {Model} from '../../base/Model';
+import {Passport} from './Passport';
 
 @Entity()
-export class User extends Model
-{
+export class User extends Model {
     @Field()
     public username: string;
 
@@ -21,5 +20,5 @@ export class User extends Model
     @Field()
     @ElementType(Passport)
     @Fetch(FetchType.Lazy)
-    public passports:Passport[];
+    public passports: Passport[];
 }

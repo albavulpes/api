@@ -1,10 +1,9 @@
-import {Field, Entity, ElementType} from "hydrate-mongodb";
-import {Model} from "../../base/Model";
-import {Arc} from "./Arc";
+import {Field, Entity, ElementType} from 'hydrate-mongodb';
+import {Model} from '../../base/Model';
+import {Arc} from './Arc';
 
 @Entity()
-export class Season extends Model
-{
+export class Season extends Model {
     @Field()
     public comicId: string;
 
