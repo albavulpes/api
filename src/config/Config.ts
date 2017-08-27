@@ -1,26 +1,32 @@
-import path = require('path');
-import {IAppConfig} from '../interfaces/IAppConfig';
+import path = require("path");
+import dotenv = require("dotenv");
+import {IAppConfig} from "../interfaces/IAppConfig";
 
-const env = process.env.NODE_ENV || 'development';
-const isDevEnv = (env === 'development');
+const rootPath = path.join(__dirname, "..");
 
-const rootPath = path.join(__dirname, '..');
+const env = process.env.NODE_ENV || "development";
+const isDevEnv = (env === "development");
+
+// If we are in development mode, set up dotenv
+// NOTE: Environment variables will be autoloaded from the environment when this is deployed to e.g. testing, staging, production etc.
+if (isDevEnv)
+    dotenv.config();
 
 export const CONFIG: IAppConfig = {
     rootPath: rootPath,
-    port: isDevEnv ? 7950 : 80,
+    port: process.env.PORT,
     cors: {
         origin: process.env.CLIENT_URL || true,
         credentials: true
     },
     winston: {
-        level: isDevEnv ? 'debug' : 'info'
+        level: isDevEnv ? "debug" : "info"
     },
     jwt: {
-        secret: process.env.JWT_SECRET || 'asdfghjkl',
+        secret: process.env.JWT_SECRET,
         expiryInMinutes: 30,
         cookie: {
-            name: process.env.JWT_COOKIE || 'project.elegantstrokes.presence',
+            name: process.env.JWT_COOKIE,
             options: {
                 httpOnly: true,
                 secure: !isDevEnv,
@@ -29,9 +35,9 @@ export const CONFIG: IAppConfig = {
         }
     },
     db: {
-        connectionString: 'mongodb://localhost:27017/project-elegant-strokes'
+        url: process.env.DATABASE_URL
     },
     settings: {
-        fileStoragePath: process.env.SETTINGS_STORAGE_PATH || path.resolve('/data/project-strokes/')
+        storagePath: path.resolve(process.env.STORAGE_PATH)
     }
 };
