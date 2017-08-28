@@ -7,6 +7,7 @@ namespace AlbaVulpes.API.Models
 {
     public class Chapter
     {
+        public long Id { get; set; }
         public int Number { get; set; }
         public string Title { get; set; }
     }
