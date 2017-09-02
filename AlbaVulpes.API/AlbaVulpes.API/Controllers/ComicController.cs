@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +21,7 @@ namespace AlbaVulpes.API.Controllers
 
         
         [HttpGet]
-        public IEnumerable<Comic> Get()
+        public IEnumerable<Comic> GetAll()
         {
             using (var session = _documentStore.QuerySession())
             {
@@ -30,7 +30,7 @@ namespace AlbaVulpes.API.Controllers
         }
         
         [HttpGet("{id}")]
-        public Comic Get(long id)
+        public Comic GetById(long id)
         {
             using (var session = _documentStore.QuerySession())
             {
@@ -40,34 +40,68 @@ namespace AlbaVulpes.API.Controllers
                     .FirstOrDefault();
             }
         }
-        
+
         [HttpPost]
-        public void Create([FromBody]Comic comic)
+        public IActionResult Create([FromBody]Comic comic)
         {
-            using (var session = _documentStore.LightweightSession())
+            if(comic == null)
             {
-                session.Store(comic);
+                return BadRequest();
+            }
+
+            var newComic = new Comic
+            {
+                Id = comic.Id,
+                Title = comic.Title,
+                Author = comic.Author,
+                Arcs = comic.Arcs
+            };
+
+            using (var session = _documentStore.OpenSession())
+            {
+                session.Store(newComic);
                 session.SaveChanges();
+                return Ok();
             }
         }
         
         [HttpPut("{id}")]
-        public void Update([FromBody]Comic comic)
+        public IActionResult Update([FromBody]Comic comic, long id)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = _documentStore.OpenSession())
             {
-                session.Update<Comic>(comic);
+                var comicToUpdate = session
+                    .Query<Comic>()
+                    .Where(c => c.Id == id)
+                    .FirstOrDefault();
+
+                if(comicToUpdate == null)
+                {
+                    BadRequest();
+                }
+                
+                comicToUpdate.Title = comic.Title;
+                comicToUpdate.Author = comic.Author;
+                comicToUpdate.Arcs = comic.Arcs;
+
+                session.Store(comicToUpdate);
                 session.SaveChanges();
+                return Ok();
             }
         }
         
         [HttpDelete("{id}")]
-        public void Delete(long id)
+        public IActionResult Delete(long id)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = _documentStore.OpenSession())
             {
+                if(session.Query<Comic>().Where(comic => comic.Id == id).FirstOrDefault() == null)
+                {
+                    return NotFound();
+                }
                 session.DeleteWhere<Comic>(comic => comic.Id == id);
                 session.SaveChanges();
+                return Ok();
             }
         }
     }
