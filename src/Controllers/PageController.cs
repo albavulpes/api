@@ -18,56 +18,93 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        public override IEnumerable<Page> Get()
+        public override IActionResult Get()
         {
             using (var session = Store.QuerySession())
             {
-                return session.Query<Page>();
+                var pages = session.Query<Page>().Take(10);
+                return Ok(pages);
             }
         }
 
-        public override Page Get(Guid id)
+        public override IActionResult Get(Guid id)
         {
             using (var session = Store.QuerySession())
             {
-                return session
-                    .Query<Page>()
-                    .Where(page => page.Id == id)
-                    .FirstOrDefault();
+                var page = session.Query<Page>().FirstOrDefault(x => x.Id == id);
+
+                if (page == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(page);
             }
         }
 
-        public override Page Create([FromBody] Page page)
+        public override IActionResult Create([FromBody] Page page)
         {
-            using (var session = Store.LightweightSession())
+            if (page == null)
             {
-                session.Store(page);
+                return BadRequest();
+            }
+
+            var newComic = new Page
+            {
+                Number = page.Number,
+                Image = page.Image
+            };
+
+            using (var session = Store.OpenSession())
+            {
+                session.Store(newComic);
                 session.SaveChanges();
 
-                return page;
+                return Ok(newComic);
             }
         }
 
-        public override Page Update(Guid id, [FromBody] Page page)
+        public override IActionResult Update(Guid id, [FromBody] Page page)
         {
-            using (var session = Store.LightweightSession())
+            if (page == null)
             {
-                session.Update<Page>(page);
+                return BadRequest();
+            }
+
+            using (var session = Store.OpenSession())
+            {
+                var pageToUpdate = session.Query<Page>().FirstOrDefault(x => x.Id == id);
+
+                if (pageToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                pageToUpdate.Number = page.Number;
+                pageToUpdate.Image = page.Image;
+
+                session.Store(pageToUpdate);
                 session.SaveChanges();
 
-                return page;
+                return Ok(pageToUpdate);
             }
         }
 
-        public override Page Delete(Guid id)
+        public override IActionResult Delete(Guid id)
         {
-            using (var session = Store.LightweightSession())
+            using (var session = Store.OpenSession())
             {
-                var page = session.Query<Page>().FirstOrDefault(a => a.Id == id);
-                session.DeleteWhere<Page>(p => p.Id == id);
+                var page = session.Query<Page>().FirstOrDefault(x => x.Id == id);
+
+                if (page == null)
+                {
+                    return NotFound();
+                }
+
+                session.DeleteWhere<Page>(x => x.Id == id);
                 session.SaveChanges();
 
-                return page;
+                return Ok(page);
             }
         }
     }

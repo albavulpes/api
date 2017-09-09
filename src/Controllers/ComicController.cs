@@ -99,7 +99,7 @@ namespace AlbaVulpes.API.Controllers
 
                 if (comic == null)
                 {
-                    return BadRequest();
+                    return NotFound();
                 }
 
                 session.DeleteWhere<Comic>(x => x.Id == id);

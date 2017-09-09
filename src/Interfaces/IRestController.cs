@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AlbaVulpes.API.Interfaces
 {
-    interface IRestController<TModel> where TModel : ApiModel
+    public interface IRestController<in TModel> where TModel : ApiModel
     {
         [HttpGet]
         IActionResult Get();

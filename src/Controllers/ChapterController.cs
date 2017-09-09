@@ -17,57 +17,29 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        public override IEnumerable<Chapter> Get()
+        public override IActionResult Create([FromBody] Chapter data)
         {
-            using (var session = Store.QuerySession())
-            {
-                return session.Query<Chapter>();
-            }
+            throw new NotImplementedException();
         }
 
-        public override Chapter Get(Guid id)
+        public override IActionResult Delete(Guid id)
         {
-            using (var session = Store.QuerySession())
-            {
-                return session
-                    .Query<Chapter>()
-                    .Where(chapter => chapter.Id == id)
-                    .FirstOrDefault();
-            }
+            throw new NotImplementedException();
         }
 
-        public override Chapter Create([FromBody] Chapter data)
+        public override IActionResult Get()
         {
-            using (var session = Store.LightweightSession())
-            {
-                session.Store(data);
-                session.SaveChanges();
-
-                return data;
-            }
+            throw new NotImplementedException();
         }
 
-        public override Chapter Update(Guid id, [FromBody] Chapter data)
+        public override IActionResult Get(Guid id)
         {
-            using (var session = Store.LightweightSession())
-            {
-                session.Update<Chapter>(data);
-                session.SaveChanges();
-
-                return data;
-            }
+            throw new NotImplementedException();
         }
 
-        public override Chapter Delete(Guid id)
+        public override IActionResult Update(Guid id, [FromBody] Chapter data)
         {
-            using (var session = Store.LightweightSession())
-            {
-                var chapter = session.Query<Chapter>().FirstOrDefault(a => a.Id == id);
-                session.DeleteWhere<Chapter>(c => c.Id == id);
-                session.SaveChanges();
-
-                return chapter;
-            }
+            throw new NotImplementedException();
         }
     }
 }

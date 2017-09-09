@@ -17,59 +17,29 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        [HttpGet]
-        public override IEnumerable<Arc> Get()
+        public override IActionResult Create([FromBody] Arc data)
         {
-            using (var session = Store.QuerySession())
-            {
-                return session.Query<Arc>();
-            }
+            throw new NotImplementedException();
         }
 
-        [HttpGet("{id}")]
-        public override Arc Get(Guid id)
+        public override IActionResult Delete(Guid id)
         {
-            using (var session = Store.QuerySession())
-            {
-                return session.Query<Arc>().FirstOrDefault(arc => arc.Id == id);
-            }
+            throw new NotImplementedException();
         }
 
-        [HttpPost]
-        public override Arc Create([FromBody]Arc arc)
+        public override IActionResult Get()
         {
-            using (var session = Store.LightweightSession())
-            {
-                session.Store(arc);
-                session.SaveChanges();
-
-                return arc;
-            }
+            throw new NotImplementedException();
         }
 
-        [HttpPut("{id}")]
-        public override Arc Update(Guid id, [FromBody]Arc arc)
+        public override IActionResult Get(Guid id)
         {
-            using (var session = Store.LightweightSession())
-            {
-                session.Update<Arc>(arc);
-                session.SaveChanges();
-
-                return arc;
-            }
+            throw new NotImplementedException();
         }
 
-        [HttpDelete("{id}")]
-        public override Arc Delete(Guid id)
+        public override IActionResult Update(Guid id, [FromBody] Arc data)
         {
-            using (var session = Store.LightweightSession())
-            {
-                var arc = session.Query<Arc>().FirstOrDefault(a => a.Id == id);
-                session.DeleteWhere<Arc>(a => a.Id == id);
-                session.SaveChanges();
-
-                return arc;
-            }
+            throw new NotImplementedException();
         }
     }
 }
