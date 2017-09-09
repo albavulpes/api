@@ -6,68 +6,69 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
 using AlbaVulpes.API.Models;
+using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Controllers
-{   
+{
     [Route("arcs")]
-    public class ArcController : Controller
+    public class ArcController : ApiController<Arc>
     {
-        private readonly IDocumentStore _documentStore;
-
-        public ArcController(IDocumentStore documentStore)
+        public ArcController(IDocumentStore documentStore) : base(documentStore)
         {
-            _documentStore = documentStore;
         }
-
 
         [HttpGet]
         public IEnumerable<Arc> Get()
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
                 return session.Query<Arc>();
             }
         }
 
         [HttpGet("{id}")]
-        public Arc Get(long id)
+        public Arc Get(Guid id)
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
-                return session
-                    .Query<Arc>()
-                    .Where(arc => arc.Id == id)
-                    .FirstOrDefault();
+                return session.Query<Arc>().FirstOrDefault(arc => arc.Id == id);
             }
         }
 
         [HttpPost]
-        public void Create([FromBody]Arc arc)
+        public Arc Create([FromBody]Arc arc)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
                 session.Store(arc);
                 session.SaveChanges();
+
+                return arc;
             }
         }
 
         [HttpPut("{id}")]
-        public void Update([FromBody]Arc arc)
+        public Arc Update(Guid id, [FromBody]Arc arc)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
                 session.Update<Arc>(arc);
                 session.SaveChanges();
+
+                return arc;
             }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(long id)
+        public Arc Delete(Guid id)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
-                session.DeleteWhere<Arc>(arc => arc.Id == id);
+                var arc = session.Query<Arc>().FirstOrDefault(a => a.Id == id);
+                session.DeleteWhere<Arc>(a => a.Id == id);
                 session.SaveChanges();
+
+                return arc;
             }
         }
     }
