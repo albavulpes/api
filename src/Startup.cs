@@ -27,9 +27,8 @@ namespace AlbaVulpes.API
             services.AddMvc();
             services.AddScoped<IDocumentStore>(provider =>
                 DocumentStore
-                    .For("host=localhost;port=5432;database=AlbaVulpesDb;password=;username="));
+                    .For("host=localhost;port=5432;database=AlbaVulpes;username=albavulpes;password=asdfghjkl;"));
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

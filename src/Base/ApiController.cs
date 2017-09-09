@@ -17,10 +17,15 @@ namespace AlbaVulpes.API.Base
             Store = documentStore;
         }
 
+        [HttpGet]
         public abstract IActionResult Get();
+        [HttpGet("{id}")]
         public abstract IActionResult Get(Guid id);
+        [HttpPost]
         public abstract IActionResult Create([FromBody] TModel data);
+        [HttpPut("{id}")]
         public abstract IActionResult Update(Guid id, [FromBody] TModel data);
+        [HttpDelete("{id}")]
         public abstract IActionResult Delete(Guid id);
     }
 }

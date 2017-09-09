@@ -8,6 +8,6 @@ namespace AlbaVulpes.API.Base
     public class ApiModel
     {
         public Guid Id { get; set; }
-        public string Hash { get; set; }
+        public string _hash { get; set; }
     }
 }
