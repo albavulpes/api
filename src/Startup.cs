@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Marten;
+using Newtonsoft.Json.Serialization;
 
 namespace AlbaVulpes.API
 {
@@ -24,7 +25,9 @@ namespace AlbaVulpes.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
             services.AddScoped<IDocumentStore>(provider =>
                 DocumentStore
                     .For("host=localhost;port=5432;database=AlbaVulpes;username=albavulpes;password=asdfghjkl;"));
