@@ -6,34 +6,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
 using AlbaVulpes.API.Models;
+using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Controllers
 {
-    
     [Route("chapters")]
-    public class ChapterController : Controller
+    public class ChapterController : ApiController<Chapter>
     {
-        private readonly IDocumentStore _documentStore;
-
-        public ChapterController(IDocumentStore documentStore)
+        public ChapterController(IDocumentStore documentStore) : base(documentStore)
         {
-            _documentStore = documentStore;
         }
 
-
-        [HttpGet]
-        public IEnumerable<Chapter> Get()
+        public override IEnumerable<Chapter> Get()
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
                 return session.Query<Chapter>();
             }
         }
 
-        [HttpGet("{id}")]
-        public Chapter Get(long id)
+        public override Chapter Get(Guid id)
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
                 return session
                     .Query<Chapter>()
@@ -42,33 +36,37 @@ namespace AlbaVulpes.API.Controllers
             }
         }
 
-        [HttpPost]
-        public void Create([FromBody]Chapter chapter)
+        public override Chapter Create([FromBody] Chapter data)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
-                session.Store(chapter);
+                session.Store(data);
                 session.SaveChanges();
+
+                return data;
             }
         }
 
-        [HttpPut("{id}")]
-        public void Update([FromBody]Chapter chapter)
+        public override Chapter Update(Guid id, [FromBody] Chapter data)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
-                session.Update<Chapter>(chapter);
+                session.Update<Chapter>(data);
                 session.SaveChanges();
+
+                return data;
             }
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(long id)
+        public override Chapter Delete(Guid id)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
-                session.DeleteWhere<Chapter>(chapter => chapter.Id == id);
+                var chapter = session.Query<Chapter>().FirstOrDefault(a => a.Id == id);
+                session.DeleteWhere<Chapter>(c => c.Id == id);
                 session.SaveChanges();
+
+                return chapter;
             }
         }
     }

@@ -14,15 +14,15 @@ namespace AlbaVulpes.API.Interfaces
         IEnumerable<TModel> Get();
 
         [HttpGet("{id}")]
-        TModel Get(long id);
+        TModel Get(Guid id);
 
         [HttpPost]
         TModel Create([FromBody]TModel data);
 
         [HttpPut("{id}")]
-        TModel Update([FromBody]TModel data);
+        TModel Update(Guid id, [FromBody]TModel data);
 
         [HttpDelete("{id}")]
-        TModel Delete(long id);
+        TModel Delete(Guid id);
     }
 }

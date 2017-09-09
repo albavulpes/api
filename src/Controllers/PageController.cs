@@ -6,33 +6,29 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
 using AlbaVulpes.API.Models;
+using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Controllers
 {
 
     [Route("pages")]
-    public class PageController : Controller
+    public class PageController : ApiController<Page>
     {
-        private readonly IDocumentStore _documentStore;
-
-        public PageController(IDocumentStore documentStore)
+        public PageController(IDocumentStore documentStore) : base(documentStore)
         {
-            _documentStore = documentStore;
         }
 
-        [HttpGet]
-        public IEnumerable<Page> Get()
+        public override IEnumerable<Page> Get()
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
                 return session.Query<Page>();
             }
         }
 
-        [HttpGet]
-        public Page Get(long id)
+        public override Page Get(Guid id)
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
                 return session
                     .Query<Page>()
@@ -41,33 +37,37 @@ namespace AlbaVulpes.API.Controllers
             }
         }
 
-        [HttpPost]
-        public void Create([FromBody]Page page)
+        public override Page Create([FromBody] Page page)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
                 session.Store(page);
                 session.SaveChanges();
+
+                return page;
             }
         }
 
-        [HttpPut]
-        public void Update([FromBody]Page page)
+        public override Page Update(Guid id, [FromBody] Page page)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
                 session.Update<Page>(page);
                 session.SaveChanges();
+
+                return page;
             }
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(long id)
+        public override Page Delete(Guid id)
         {
-            using (var session = _documentStore.LightweightSession())
+            using (var session = Store.LightweightSession())
             {
-                session.DeleteWhere<Page>(page => page.Id == id);
+                var page = session.Query<Page>().FirstOrDefault(a => a.Id == id);
+                session.DeleteWhere<Page>(p => p.Id == id);
                 session.SaveChanges();
+
+                return page;
             }
         }
     }

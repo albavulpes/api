@@ -18,9 +18,9 @@ namespace AlbaVulpes.API.Base
         }
 
         public abstract IEnumerable<TModel> Get();
-        public abstract TModel Get(long id);
+        public abstract TModel Get(Guid id);
         public abstract TModel Create([FromBody] TModel data);
-        public abstract TModel Update([FromBody] TModel data);
-        public abstract TModel Delete(long id);
+        public abstract TModel Update(Guid id, [FromBody] TModel data);
+        public abstract TModel Delete(Guid id);
     }
 }

@@ -18,7 +18,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Arc> Get()
+        public override IEnumerable<Arc> Get()
         {
             using (var session = Store.QuerySession())
             {
@@ -27,7 +27,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public Arc Get(Guid id)
+        public override Arc Get(Guid id)
         {
             using (var session = Store.QuerySession())
             {
@@ -36,7 +36,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpPost]
-        public Arc Create([FromBody]Arc arc)
+        public override Arc Create([FromBody]Arc arc)
         {
             using (var session = Store.LightweightSession())
             {
@@ -48,7 +48,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public Arc Update(Guid id, [FromBody]Arc arc)
+        public override Arc Update(Guid id, [FromBody]Arc arc)
         {
             using (var session = Store.LightweightSession())
             {
@@ -60,7 +60,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public Arc Delete(Guid id)
+        public override Arc Delete(Guid id)
         {
             using (var session = Store.LightweightSession())
             {
