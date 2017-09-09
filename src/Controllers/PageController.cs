@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
-using AlbaVulpes.API.Models;
+using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Controllers

@@ -11,18 +11,18 @@ namespace AlbaVulpes.API.Interfaces
     interface IRestController<TModel> where TModel : ApiModel
     {
         [HttpGet]
-        IEnumerable<TModel> Get();
+        IActionResult Get();
 
         [HttpGet("{id}")]
-        TModel Get(Guid id);
+        IActionResult Get(Guid id);
 
         [HttpPost]
-        TModel Create([FromBody]TModel data);
+        IActionResult Create([FromBody]TModel data);
 
         [HttpPut("{id}")]
-        TModel Update(Guid id, [FromBody]TModel data);
+        IActionResult Update(Guid id, [FromBody]TModel data);
 
         [HttpDelete("{id}")]
-        TModel Delete(Guid id);
+        IActionResult Delete(Guid id);
     }
 }

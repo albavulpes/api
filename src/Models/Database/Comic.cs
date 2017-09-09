@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AlbaVulpes.API.Models
+namespace AlbaVulpes.API.Models.Database
 {
-    public class Chapter : ApiModel
+    public class Comic : ApiModel
     {
-        public int Number { get; set; }
         public string Title { get; set; }
-        public List<Page> Pages { get; set; }
+        public string Author { get; set; }
+        public List<Arc> Arcs { get; set; }
     }
 }

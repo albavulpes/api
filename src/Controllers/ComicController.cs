@@ -5,103 +5,107 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
-using AlbaVulpes.API.Models;
+using AlbaVulpes.API.Models.Database;
+using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Controllers
 {
     [Route("/comics")]
-    public class ComicController : Controller
+    public class ComicController : ApiController<Comic>
     {
-        private readonly IDocumentStore _documentStore;
-
-        public ComicController(IDocumentStore documentStore)
+        public ComicController(IDocumentStore documentStore) : base(documentStore)
         {
-            _documentStore = documentStore;
         }
 
-        
-        [HttpGet]
-        public IEnumerable<Comic> GetAll()
+        public override IActionResult Get()
         {
-            using (var session = _documentStore.QuerySession())
+            using (var session = Store.QuerySession())
             {
-                return session.Query<Comic>();
-            }
-        }
-        
-        [HttpGet("{id}")]
-        public Comic GetById(Guid id)
-        {
-            using (var session = _documentStore.QuerySession())
-            {
-                return session
-                    .Query<Comic>()
-                    .Where(comic => comic.Id == id)
-                    .FirstOrDefault();
+                var comics = session.Query<Comic>().Take(10);
+                return Ok(comics);
             }
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody]Comic comic)
+        public override IActionResult Get(Guid id)
         {
-            if(comic == null)
+            using (var session = Store.QuerySession())
+            {
+                var comic = session.Query<Comic>().FirstOrDefault(x => x.Id == id);
+
+                if (comic == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(comic);
+            }
+        }
+
+        public override IActionResult Create([FromBody] Comic comic)
+        {
+            if (comic == null)
             {
                 return BadRequest();
             }
 
             var newComic = new Comic
             {
-                Id = comic.Id,
                 Title = comic.Title,
                 Author = comic.Author,
                 Arcs = comic.Arcs
             };
 
-            using (var session = _documentStore.OpenSession())
+            using (var session = Store.OpenSession())
             {
                 session.Store(newComic);
                 session.SaveChanges();
-                return Ok();
+
+                return Ok(newComic);
             }
         }
-        
-        [HttpPut("{id}")]
-        public IActionResult Update([FromBody]Comic comic, Guid id)
-        {
-            using (var session = _documentStore.OpenSession())
-            {
-                var comicToUpdate = session
-                    .Query<Comic>()
-                    .Where(c => c.Id == id)
-                    .FirstOrDefault();
 
-                if(comicToUpdate == null)
+        public override IActionResult Update(Guid id, [FromBody] Comic comic)
+        {
+            if (comic == null)
+            {
+                return BadRequest();
+            }
+
+            using (var session = Store.OpenSession())
+            {
+                var comicToUpdate = session.Query<Comic>().FirstOrDefault(x => x.Id == id);
+
+                if (comicToUpdate == null)
                 {
-                    BadRequest();
+                    return NotFound();
                 }
-                
+
                 comicToUpdate.Title = comic.Title;
                 comicToUpdate.Author = comic.Author;
                 comicToUpdate.Arcs = comic.Arcs;
 
                 session.Store(comicToUpdate);
                 session.SaveChanges();
-                return Ok();
+
+                return Ok(comicToUpdate);
             }
         }
-        
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+
+        public override IActionResult Delete(Guid id)
         {
-            using (var session = _documentStore.OpenSession())
+            using (var session = Store.OpenSession())
             {
-                if(session.Query<Comic>().Where(comic => comic.Id == id).FirstOrDefault() == null)
+                var comic = session.Query<Comic>().FirstOrDefault(x => x.Id == id);
+
+                if (comic == null)
                 {
-                    BadRequest();
+                    return BadRequest();
                 }
-                session.DeleteWhere<Comic>(comic => comic.Id == id);
+
+                session.DeleteWhere<Comic>(x => x.Id == id);
                 session.SaveChanges();
-                return Ok();
+
+                return Ok(comic);
             }
         }
     }
