@@ -30,7 +30,7 @@ namespace AlbaVulpes.API.Controllers
         }
         
         [HttpGet("{id}")]
-        public Comic GetById(long id)
+        public Comic GetById(Guid id)
         {
             using (var session = _documentStore.QuerySession())
             {
@@ -66,7 +66,7 @@ namespace AlbaVulpes.API.Controllers
         }
         
         [HttpPut("{id}")]
-        public IActionResult Update([FromBody]Comic comic, long id)
+        public IActionResult Update([FromBody]Comic comic, Guid id)
         {
             using (var session = _documentStore.OpenSession())
             {
@@ -91,13 +91,13 @@ namespace AlbaVulpes.API.Controllers
         }
         
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(Guid id)
         {
             using (var session = _documentStore.OpenSession())
             {
                 if(session.Query<Comic>().Where(comic => comic.Id == id).FirstOrDefault() == null)
                 {
-                    return NotFound();
+                    BadRequest();
                 }
                 session.DeleteWhere<Comic>(comic => comic.Id == id);
                 session.SaveChanges();
