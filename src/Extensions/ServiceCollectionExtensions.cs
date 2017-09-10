@@ -16,7 +16,7 @@ namespace AlbaVulpes.API.Extensions
 
         public static void AddUnitOfWork(this IServiceCollection services)
         {
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }
