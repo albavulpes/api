@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,36 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        public override IActionResult Get()
+        public override IActionResult Create([FromBody] Page page)
         {
-            using (var session = Store.QuerySession())
+            if (page == null)
             {
-                var pages = session.Query<Page>().Take(10);
-                return Ok(pages);
+                return BadRequest();
+            }
+
+            var newPage = new Page
+            {
+                Number = page.Number,
+                Image = page.Image
+            };
+
+            using (var session = Store.OpenSession())
+            {
+                session.Store(newPage);
+                session.SaveChanges();
+
+                newPage.ComputeHash();
+
+                session.Update(newPage);
+                session.SaveChanges();
+
+                Response.Headers["ETag"] = newPage.Hash;
+
+                return Ok(newPage);
             }
         }
 
-        public override IActionResult Get(Guid id)
+        public override IActionResult Read(Guid id)
         {
             using (var session = Store.QuerySession())
             {
@@ -38,29 +59,19 @@ namespace AlbaVulpes.API.Controllers
                     return NotFound();
                 }
 
+                var requestHash = Request.Headers["If-None-Match"];
+                if (!string.IsNullOrEmpty(requestHash))
+                {
+                    // Match the requested hash with the database hash
+                    if (requestHash == page.Hash)
+                    {
+                        return StatusCode((int)HttpStatusCode.NotModified);
+                    }
+                }
+
+                Response.Headers["ETag"] = page.Hash;
+
                 return Ok(page);
-            }
-        }
-
-        public override IActionResult Create([FromBody] Page page)
-        {
-            if (page == null)
-            {
-                return BadRequest();
-            }
-
-            var newComic = new Page
-            {
-                Number = page.Number,
-                Image = page.Image
-            };
-
-            using (var session = Store.OpenSession())
-            {
-                session.Store(newComic);
-                session.SaveChanges();
-
-                return Ok(newComic);
             }
         }
 
@@ -73,20 +84,17 @@ namespace AlbaVulpes.API.Controllers
 
             using (var session = Store.OpenSession())
             {
-                var pageToUpdate = session.Query<Page>().FirstOrDefault(x => x.Id == id);
+                var dbPage = session.Query<Page>().FirstOrDefault(x => x.Id == id);
 
-                if (pageToUpdate == null)
+                if (dbPage == null)
                 {
                     return NotFound();
                 }
 
-                pageToUpdate.Number = page.Number;
-                pageToUpdate.Image = page.Image;
-
-                session.Store(pageToUpdate);
+                session.Update(page);
                 session.SaveChanges();
 
-                return Ok(pageToUpdate);
+                return Ok(page);
             }
         }
 
