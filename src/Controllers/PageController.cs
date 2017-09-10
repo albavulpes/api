@@ -1,45 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Marten;
 using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Interfaces;
 
 namespace AlbaVulpes.API.Controllers
 {
-
     [Route("pages")]
     public class PageController : ApiController<Page>
     {
-        public PageController(IDocumentStore documentStore) : base(documentStore)
+        public PageController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-        }
-
-        public override IActionResult Get()
-        {
-            using (var session = Store.QuerySession())
-            {
-                var pages = session.Query<Page>().Take(10);
-                return Ok(pages);
-            }
-        }
-
-        public override IActionResult Get(Guid id)
-        {
-            using (var session = Store.QuerySession())
-            {
-                var page = session.Query<Page>().FirstOrDefault(x => x.Id == id);
-
-                if (page == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(page);
-            }
         }
 
         public override IActionResult Create([FromBody] Page page)
@@ -49,19 +23,41 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var newComic = new Page
+            var newPage = new Page
             {
                 Number = page.Number,
                 Image = page.Image
             };
 
-            using (var session = Store.OpenSession())
-            {
-                session.Store(newComic);
-                session.SaveChanges();
+            UnitOfWork.GetRepository<Page>().Create(newPage);
 
-                return Ok(newComic);
+            Response.Headers["ETag"] = newPage.Hash;
+
+            return Ok(newPage);
+        }
+
+        public override IActionResult Read(Guid id)
+        {
+            var page = UnitOfWork.GetRepository<Page>().GetSingle(id);
+
+            if (page == null)
+            {
+                return NotFound();
             }
+
+            var requestHash = Request.Headers["If-None-Match"];
+            if (!string.IsNullOrEmpty(requestHash))
+            {
+                // Match the requested hash with the database hash
+                if (requestHash == page.Hash)
+                {
+                    return StatusCode((int)HttpStatusCode.NotModified);
+                }
+            }
+
+            Response.Headers["ETag"] = page.Hash;
+
+            return Ok(page);
         }
 
         public override IActionResult Update(Guid id, [FromBody] Page page)
@@ -71,41 +67,26 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            using (var session = Store.OpenSession())
+            var updatedPage = UnitOfWork.GetRepository<Page>().Update(id, page);
+
+            if (updatedPage == null)
             {
-                var pageToUpdate = session.Query<Page>().FirstOrDefault(x => x.Id == id);
-
-                if (pageToUpdate == null)
-                {
-                    return NotFound();
-                }
-
-                pageToUpdate.Number = page.Number;
-                pageToUpdate.Image = page.Image;
-
-                session.Store(pageToUpdate);
-                session.SaveChanges();
-
-                return Ok(pageToUpdate);
+                return NotFound();
             }
+
+            return Ok(updatedPage);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            using (var session = Store.OpenSession())
+            var deletedPage = UnitOfWork.GetRepository<Page>().RemoveSingle(id);
+
+            if (deletedPage == null)
             {
-                var page = session.Query<Page>().FirstOrDefault(x => x.Id == id);
-
-                if (page == null)
-                {
-                    return NotFound();
-                }
-
-                session.DeleteWhere<Page>(x => x.Id == id);
-                session.SaveChanges();
-
-                return Ok(page);
+                return NotFound();
             }
+
+            return Ok(deletedPage);
         }
     }
 }
