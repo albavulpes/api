@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AlbaVulpes.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Marten;
 using Newtonsoft.Json.Serialization;
 
@@ -28,9 +23,8 @@ namespace AlbaVulpes.API
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
-            services.AddScoped<IDocumentStore>(provider =>
-                DocumentStore
-                    .For("host=localhost;port=5432;database=AlbaVulpes;username=albavulpes;password=asdfghjkl;"));
+            services.AddMarten();
+            services.AddUnitOfWork();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

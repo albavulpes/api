@@ -1,8 +1,5 @@
 ﻿using AlbaVulpes.API.Base;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AlbaVulpes.API.Models.App;
 
 namespace AlbaVulpes.API.Models.Database
