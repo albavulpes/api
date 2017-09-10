@@ -12,17 +12,15 @@ namespace AlbaVulpes.API.Base
     {
         protected readonly IDocumentStore Store;
 
-        public ApiController(IDocumentStore documentStore)
+        protected ApiController(IDocumentStore documentStore)
         {
             Store = documentStore;
         }
 
-        [HttpGet]
-        public abstract IActionResult Get();
-        [HttpGet("{id}")]
-        public abstract IActionResult Get(Guid id);
         [HttpPost]
         public abstract IActionResult Create([FromBody] TModel data);
+        [HttpGet("{id}")]
+        public abstract IActionResult Read(Guid id);
         [HttpPut("{id}")]
         public abstract IActionResult Update(Guid id, [FromBody] TModel data);
         [HttpDelete("{id}")]
