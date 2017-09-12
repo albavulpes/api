@@ -59,9 +59,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arc);
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Arc data)
+        public override IActionResult Update(Guid id, [FromBody] Arc arc)
         {
-            if (Arc == null)
+            if (arc == null)
             {
                 return BadRequest();
             }
