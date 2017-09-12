@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Marten;
 using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
@@ -13,7 +11,7 @@ namespace AlbaVulpes.API.Controllers
     [Route("comics")]
     public class ComicController : ApiController<Comic>
     {
-        public ComicController(IUnitOfWork unitOfWork): base(unitOfWork)
+        public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
@@ -28,7 +26,8 @@ namespace AlbaVulpes.API.Controllers
             {
                 Title = comic.Title,
                 Author = comic.Author,
-                Arcs = comic.Arcs
+                Arcs = comic.Arcs,
+                CoverImage = comic.CoverImage
             };
             UnitOfWork.GetRepository<Comic>().Create(newComic);
 
@@ -47,7 +46,7 @@ namespace AlbaVulpes.API.Controllers
             }
 
             var requestHash = Request.Headers["If-None-Match"];
-            if(!string.IsNullOrEmpty(requestHash))
+            if (!string.IsNullOrEmpty(requestHash))
             {
                 if (requestHash == comic.Hash)
                 {
@@ -68,26 +67,26 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var updatedComic = UnitOfWork.GetRepository<Comic>().Update(id, comic);
+            var comicToUpdate = UnitOfWork.GetRepository<Comic>().Update(id, comic);
 
-            if (updatedComic == null)
+            if (comicToUpdate == null)
             {
                 return NotFound();
             }
 
-            return Ok(updatedComic);
+            return Ok(comicToUpdate);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            var deletedComic = UnitOfWork.GetRepository<Comic>().RemoveSingle(id);
+            var comicToDelete = UnitOfWork.GetRepository<Comic>().RemoveSingle(id);
 
-            if (deletedComic == null)
+            if (comicToDelete == null)
             {
                 return NotFound();
             }
 
-            return Ok(deletedComic);
+            return Ok(comicToDelete);
         }
     }
 }
