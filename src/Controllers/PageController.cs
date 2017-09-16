@@ -8,6 +8,7 @@ using AlbaVulpes.API.Interfaces;
 namespace AlbaVulpes.API.Controllers
 {
     [Route("pages")]
+    [Produces("application/json")]
     public class PageController : ApiController<Page>
     {
         public PageController(IUnitOfWork unitOfWork) : base(unitOfWork)

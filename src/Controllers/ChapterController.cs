@@ -8,8 +8,8 @@ using AlbaVulpes.API.Interfaces;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Produces("application/json")]
     [Route("chapters")]
+    [Produces("application/json")]
     public class ChapterController : ApiController<Chapter>
     {
         public ChapterController(IUnitOfWork unitOfWork) : base(unitOfWork)
