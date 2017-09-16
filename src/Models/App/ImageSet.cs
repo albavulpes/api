@@ -2,7 +2,7 @@
 {
     public class ImageSet
     {
-        public string FullRes { get; set; }
+        public string FullSize { get; set; }
         public string Thumbnail { get; set; }
     }
 }

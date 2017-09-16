@@ -2,13 +2,14 @@
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.App;
 
-namespace AlbaVulpes.API.Models.Resource
+namespace AlbaVulpes.API.Models.Views
 {
-    public class Page : ApiModel
+    public class PageViewModel
     {
+        public Guid Id { get; set; }
+        public int PageNumber { get; set; }
         public Guid ChapterId { get; set; }
 
-        public int PageNumber { get; set; }
         public ImageSet Image { get; set; }
     }
 }

@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class ChapterInfo : ApiModel
+    public class Chapter : ApiModel
     {
+        public Guid ArcId { get; set; }
+
         public string Title { get; set; }
         public int ChapterNumber { get; set; }
-        public List<PageInfo> Pages { get; set; }
-    }
 
-    public class Chapter : ChapterInfo
-    {
+        public List<Page> Pages { get; set; }
     }
 }
