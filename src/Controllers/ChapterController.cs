@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
+using AlbaVulpes.API.Models.Resource;
 
 
 namespace AlbaVulpes.API.Controllers
@@ -26,7 +26,7 @@ namespace AlbaVulpes.API.Controllers
 
             var newChapter = new Chapter
             {
-                Number = chapter.Number,
+                ChapterNumber = chapter.ChapterNumber,
                 Title = chapter.Title,
                 Pages = chapter.Pages
             };

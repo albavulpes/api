@@ -1,7 +1,7 @@
-﻿using AlbaVulpes.API.Base;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using AlbaVulpes.API.Base;
 
-namespace AlbaVulpes.API.Models.Database
+namespace AlbaVulpes.API.Models.Resource
 {
     public class Arc : ApiModel
     {

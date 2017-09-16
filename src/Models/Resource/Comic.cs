@@ -1,14 +1,14 @@
-﻿using AlbaVulpes.API.Base;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.App;
 
-namespace AlbaVulpes.API.Models.Database
+namespace AlbaVulpes.API.Models.Resource
 {
     public class Comic : ApiModel
     {
         public string Title { get; set; }
         public string Author { get; set; }
-        public List<Arc> Arcs { get; set; }
+        public List<ArcInfo> Arcs { get; set; }
         public ImageSet CoverImage { get; set; }
     }
 }

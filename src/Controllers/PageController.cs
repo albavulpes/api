@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
+using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -24,7 +24,7 @@ namespace AlbaVulpes.API.Controllers
 
             var newPage = new Page
             {
-                Number = page.Number,
+                PageNumber = page.PageNumber,
                 Image = page.Image
             };
 
