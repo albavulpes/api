@@ -4,13 +4,17 @@ using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class Chapter : ApiModel
+    public class ChapterInfo : ApiModel
+    {
+        public string Title { get; set; }
+        public int ChapterNumber { get; set; }
+        public string CoverImageThumbnail { get; set; }
+    }
+
+    public class Chapter : ChapterInfo
     {
         public Guid ArcId { get; set; }
 
-        public string Title { get; set; }
-        public int ChapterNumber { get; set; }
-
-        public List<Page> Pages { get; set; }
+        public List<PageInfo> Pages { get; set; }
     }
 }
