@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Marten;
 using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
@@ -33,7 +31,7 @@ namespace AlbaVulpes.API.Controllers
 
             Response.Headers["ETag"] = newPage.Hash;
 
-            return Ok(newPage);
+            return CreatedAtRoute("pages", new { id = newPage.Id }, newPage);
         }
 
         public override IActionResult Read(Guid id)
@@ -67,26 +65,26 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var updatedPage = UnitOfWork.GetRepository<Page>().Update(id, page);
+            var pageToUpdate = UnitOfWork.GetRepository<Page>().Update(id, page);
 
-            if (updatedPage == null)
+            if (pageToUpdate == null)
             {
                 return NotFound();
             }
 
-            return Ok(updatedPage);
+            return Ok(pageToUpdate);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            var deletedPage = UnitOfWork.GetRepository<Page>().RemoveSingle(id);
+            var pageToDelete = UnitOfWork.GetRepository<Page>().RemoveSingle(id);
 
-            if (deletedPage == null)
+            if (pageToDelete == null)
             {
                 return NotFound();
             }
 
-            return Ok(deletedPage);
+            return Ok(pageToDelete);
         }
     }
 }
