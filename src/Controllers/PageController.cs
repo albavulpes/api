@@ -25,7 +25,8 @@ namespace AlbaVulpes.API.Controllers
             var newPage = new Page
             {
                 PageNumber = page.PageNumber,
-                Image = page.Image
+                ImageFullSize = page.ImageFullSize,
+                ImageThumbnail = page.ImageThumbnail
             };
 
             UnitOfWork.GetRepository<Page>().Create(newPage);

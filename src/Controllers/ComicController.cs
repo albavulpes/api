@@ -27,7 +27,8 @@ namespace AlbaVulpes.API.Controllers
                 Title = comic.Title,
                 Author = comic.Author,
                 Arcs = comic.Arcs,
-                CoverImage = comic.CoverImage
+                CoverImageFullSize = comic.CoverImageFullSize,
+                CoverImageThumbnail = comic.CoverImageThumbnail
             };
             UnitOfWork.GetRepository<Comic>().Create(newComic);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlbaVulpes.API.Base;
-using AlbaVulpes.API.Models.App;
 
 namespace AlbaVulpes.API.Models.Resource
 {
