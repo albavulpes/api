@@ -33,7 +33,7 @@ namespace AlbaVulpes.API.Controllers
 
             Response.Headers["ETag"] = newPage.Hash;
 
-            return CreatedAtAction("Create", newPage);
+            return CreatedAtAction("Read", new { id = newPage.Id }, newPage);
         }
 
         public override IActionResult Read(Guid id)

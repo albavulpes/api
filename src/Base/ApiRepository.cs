@@ -19,7 +19,7 @@ namespace AlbaVulpes.API.Base
         {
             using (var session = Store.QuerySession())
             {
-                var data = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var data = session.Load<TModel>(id);
 
                 return data;
             }
@@ -45,7 +45,7 @@ namespace AlbaVulpes.API.Base
         {
             using (var session = Store.OpenSession())
             {
-                var dbData = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var dbData = session.Load<TModel>(id);
 
                 if (dbData == null)
                 {
@@ -56,7 +56,7 @@ namespace AlbaVulpes.API.Base
                 data.Id = dbData.Id;
 
                 data.ComputeHash();
-                
+
                 session.Update(data);
                 session.SaveChanges();
 
@@ -68,14 +68,14 @@ namespace AlbaVulpes.API.Base
         {
             using (var session = Store.OpenSession())
             {
-                var data = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var data = session.Load<TModel>(id);
 
                 if (data == null)
                 {
                     return null;
                 }
 
-                session.DeleteWhere<TModel>(x => x.Id == id);
+                session.Delete<TModel>(id);
                 session.SaveChanges();
 
                 return data;

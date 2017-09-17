@@ -10,7 +10,6 @@ namespace AlbaVulpes.API.Base
     {
         public Guid Id { get; set; }
 
-        [JsonIgnore]
         public string Hash { get; set; }
 
         public virtual void ComputeHash()

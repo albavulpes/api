@@ -34,7 +34,7 @@ namespace AlbaVulpes.API.Controllers
 
             Response.Headers["ETag"] = newComic.Hash;
 
-            return CreatedAtAction("Create", newComic);
+            return CreatedAtAction("Read", new { id = newComic.Id }, newComic);
         }
 
         public override IActionResult Read(Guid id)
