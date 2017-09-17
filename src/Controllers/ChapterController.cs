@@ -14,7 +14,6 @@ namespace AlbaVulpes.API.Controllers
     {
         public ChapterController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-
         }
 
         public override IActionResult Create([FromBody] Chapter chapter)
@@ -32,6 +31,7 @@ namespace AlbaVulpes.API.Controllers
             };
 
             UnitOfWork.GetRepository<Chapter>().Create(newChapter);
+
             Response.Headers["ETag"] = newChapter.Hash;
 
             return CreatedAtAction("Read", new { id = newChapter.Id }, newChapter);
@@ -69,14 +69,16 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var chapterToUpdate = UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
+            var updatedChapter = UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
 
-            if (chapterToUpdate == null)
+            if (updatedChapter == null)
             {
-                NotFound();
+                return NotFound();
             }
 
-            return Ok(chapterToUpdate);
+            Response.Headers["ETag"] = updatedChapter.Hash;
+
+            return Ok(updatedChapter);
         }
 
         public override IActionResult Delete(Guid id)

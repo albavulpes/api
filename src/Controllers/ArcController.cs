@@ -13,7 +13,6 @@ namespace AlbaVulpes.API.Controllers
     {
         public ArcController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-
         }
 
         public override IActionResult Create([FromBody] Arc arc)
@@ -31,6 +30,7 @@ namespace AlbaVulpes.API.Controllers
             };
 
             UnitOfWork.GetRepository<Arc>().Create(newArc);
+
             Response.Headers["ETag"] = newArc.Hash;
 
             return CreatedAtAction("Read", new { id = newArc.Id }, newArc);
@@ -66,14 +66,16 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var arcToUpdate = UnitOfWork.GetRepository<Arc>().Update(id, arc);
+            var updatedArc = UnitOfWork.GetRepository<Arc>().Update(id, arc);
 
-            if (arcToUpdate == null)
+            if (updatedArc == null)
             {
-                NotFound();
+                return NotFound();
             }
 
-            return Ok(arcToUpdate);
+            Response.Headers["ETag"] = updatedArc.Hash;
+
+            return Ok(updatedArc);
         }
 
         public override IActionResult Delete(Guid id)

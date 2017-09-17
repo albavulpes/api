@@ -13,8 +13,8 @@ namespace AlbaVulpes.API.Controllers
     {
         public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-
         }
+
         public override IActionResult Create([FromBody] Comic comic)
         {
             if (comic == null)
@@ -30,6 +30,7 @@ namespace AlbaVulpes.API.Controllers
                 CoverImageFullSize = comic.CoverImageFullSize,
                 CoverImageThumbnail = comic.CoverImageThumbnail
             };
+
             UnitOfWork.GetRepository<Comic>().Create(newComic);
 
             Response.Headers["ETag"] = newComic.Hash;
@@ -68,16 +69,16 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var comicToUpdate = UnitOfWork.GetRepository<Comic>().Update(id, comic);
+            var updatedComic = UnitOfWork.GetRepository<Comic>().Update(id, comic);
 
-            if (comicToUpdate == null)
+            if (updatedComic == null)
             {
                 return NotFound();
             }
 
-            Response.Headers["ETag"] = comicToUpdate.Hash;
+            Response.Headers["ETag"] = updatedComic.Hash;
 
-            return Ok(comicToUpdate);
+            return Ok(updatedComic);
         }
 
         public override IActionResult Delete(Guid id)

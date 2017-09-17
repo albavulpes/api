@@ -67,14 +67,16 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var pageToUpdate = UnitOfWork.GetRepository<Page>().Update(id, page);
+            var updatedPage = UnitOfWork.GetRepository<Page>().Update(id, page);
 
-            if (pageToUpdate == null)
+            if (updatedPage == null)
             {
                 return NotFound();
             }
 
-            return Ok(pageToUpdate);
+            Response.Headers["ETag"] = updatedPage.Hash;
+
+            return Ok(updatedPage);
         }
 
         public override IActionResult Delete(Guid id)
