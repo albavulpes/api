@@ -29,7 +29,7 @@ namespace AlbaVulpes.API.Base
         {
             using (var session = Store.OpenSession())
             {
-                session.Store(data);
+                session.Insert(data);
                 session.SaveChanges();
 
                 data.ComputeHash();
@@ -52,8 +52,11 @@ namespace AlbaVulpes.API.Base
                     return null;
                 }
 
-                data.ComputeHash();
+                // Ensure that the ID is provided in the model, and if not, set it anyway
+                data.Id = dbData.Id;
 
+                data.ComputeHash();
+                
                 session.Update(data);
                 session.SaveChanges();
 
