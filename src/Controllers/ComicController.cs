@@ -75,6 +75,8 @@ namespace AlbaVulpes.API.Controllers
                 return NotFound();
             }
 
+            Response.Headers["ETag"] = comicToUpdate.Hash;
+
             return Ok(comicToUpdate);
         }
 

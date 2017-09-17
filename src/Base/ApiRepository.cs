@@ -43,7 +43,7 @@ namespace AlbaVulpes.API.Base
 
         public virtual TModel Update(Guid id, TModel data)
         {
-            using (var session = Store.OpenSession())
+            using (var session = Store.QuerySession())
             {
                 var dbData = session.Load<TModel>(id);
 
@@ -54,7 +54,10 @@ namespace AlbaVulpes.API.Base
 
                 // Ensure that the ID is provided in the model, and if not, set it anyway
                 data.Id = dbData.Id;
+            }
 
+            using (var session = Store.OpenSession())
+            {
                 data.ComputeHash();
 
                 session.Update(data);
