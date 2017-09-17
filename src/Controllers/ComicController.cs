@@ -7,8 +7,8 @@ using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Route("comics")]
     [Produces("application/json")]
+    [Route("comics")]
     public class ComicController : ApiController<Comic>
     {
         public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
@@ -34,7 +34,7 @@ namespace AlbaVulpes.API.Controllers
 
             Response.Headers["ETag"] = newComic.Hash;
 
-            return CreatedAtRoute("comics", new { id = newComic.Id }, newComic);
+            return CreatedAtAction("Create", newComic);
         }
 
         public override IActionResult Read(Guid id)

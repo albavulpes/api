@@ -7,8 +7,8 @@ using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Route("pages")]
     [Produces("application/json")]
+    [Route("pages")]
     public class PageController : ApiController<Page>
     {
         public PageController(IUnitOfWork unitOfWork) : base(unitOfWork)
@@ -33,7 +33,7 @@ namespace AlbaVulpes.API.Controllers
 
             Response.Headers["ETag"] = newPage.Hash;
 
-            return CreatedAtRoute("pages", new { id = newPage.Id }, newPage);
+            return CreatedAtAction("Create", newPage);
         }
 
         public override IActionResult Read(Guid id)

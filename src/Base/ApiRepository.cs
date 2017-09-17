@@ -45,9 +45,9 @@ namespace AlbaVulpes.API.Base
         {
             using (var session = Store.OpenSession())
             {
-                var dbPage = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var dbData = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
 
-                if (dbPage == null)
+                if (dbData == null)
                 {
                     return null;
                 }

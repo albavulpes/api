@@ -33,7 +33,7 @@ namespace AlbaVulpes.API.Controllers
             UnitOfWork.GetRepository<Arc>().Create(newArc);
             Response.Headers["ETag"] = newArc.Hash;
 
-            return CreatedAtRoute("arcs", new { id = newArc.Id }, newArc);
+            return CreatedAtAction("Create", newArc);
         }
 
         public override IActionResult Read(Guid id)
