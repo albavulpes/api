@@ -13,6 +13,11 @@ namespace AlbaVulpes.API.Models.Resource
 
     public class Chapter : ChapterInfo
     {
+        public Chapter()
+        {
+            Pages = new List<PageInfo>();
+        }
+
         public Guid ArcId { get; set; }
 
         public List<PageInfo> Pages { get; set; }

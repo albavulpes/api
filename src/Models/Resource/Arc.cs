@@ -13,6 +13,11 @@ namespace AlbaVulpes.API.Models.Resource
 
     public class Arc : ArcInfo
     {
+        public Arc()
+        {
+            Chapters = new List<ChapterInfo>();
+        }
+
         public Guid ComicId { get; set; }
         public string CoverImageFullSize { get; set; }
 
