@@ -26,8 +26,21 @@ namespace AlbaVulpes.API.Repositories
                     CoverImageThumbnail = arc.CoverImageThumbnail
                 });
 
-                session.Update(comic);
-                session.SaveChanges();
+                Update(comicId, comic);
+
+                return comic;
+            }
+        }
+
+        public Comic RemoveArc(Guid comicId, Guid arcId)
+        {
+            using (var session = Store.OpenSession())
+            {
+                var comic = session.Load<Comic>(comicId);
+
+                comic.Arcs.RemoveAll(a => a.Id == arcId);
+
+                Update(comicId, comic);
 
                 return comic;
             }

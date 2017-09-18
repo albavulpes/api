@@ -85,14 +85,16 @@ namespace AlbaVulpes.API.Controllers
 
         public override IActionResult Delete(Guid id)
         {
-            var arcToDelete = UnitOfWork.GetRepository<Arc>().RemoveSingle(id);
+            var deletedArc = UnitOfWork.GetRepository<Arc>().RemoveSingle(id);
 
-            if (arcToDelete == null)
+            if (deletedArc == null)
             {
                 return NotFound();
             }
 
-            return Ok(arcToDelete);
+            UnitOfWork.GetRepository<Comic, ComicRepository>().RemoveArc(deletedArc.ComicId, deletedArc.Id);
+
+            return Ok(deletedArc);
         }
     }
 }
