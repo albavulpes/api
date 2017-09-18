@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Repositories;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Route("api/Arc")]
+    [Route("arcs")]
     [Produces("application/json")]
     public class ArcController : ApiController<Arc>
     {
@@ -26,10 +27,14 @@ namespace AlbaVulpes.API.Controllers
             {
                 Number = arc.Number,
                 Title = arc.Title,
-                Chapters = arc.Chapters
+                Chapters = arc.Chapters,
+                CoverImageThumbnail = arc.CoverImageThumbnail,
+                CoverImageFullSize = arc.CoverImageFullSize,
+                ComicId = arc.ComicId
             };
 
             UnitOfWork.GetRepository<Arc>().Create(newArc);
+            UnitOfWork.GetRepository<Comic, ComicRepository>().AddArc(newArc.ComicId, newArc.Id);
 
             Response.Headers["ETag"] = newArc.Hash;
 

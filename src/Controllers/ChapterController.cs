@@ -26,7 +26,8 @@ namespace AlbaVulpes.API.Controllers
             {
                 ChapterNumber = chapter.ChapterNumber,
                 Title = chapter.Title,
-                Pages = chapter.Pages
+                Pages = chapter.Pages,
+                ArcId = chapter.ArcId
             };
 
             UnitOfWork.GetRepository<Chapter>().Create(newChapter);
