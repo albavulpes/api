@@ -5,7 +5,6 @@ using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 
-
 namespace AlbaVulpes.API.Controllers
 {
     [Route("chapters")]

@@ -7,8 +7,8 @@ using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Produces("application/json")]
     [Route("comics")]
+    [Produces("application/json")]
     public class ComicController : ApiController<Comic>
     {
         public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
