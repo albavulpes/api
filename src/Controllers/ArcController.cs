@@ -7,7 +7,7 @@ using AlbaVulpes.API.Interfaces;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Route("api/Arc")]
+    [Route("arcs")]
     [Produces("application/json")]
     public class ArcController : ApiController<Arc>
     {
