@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Repositories;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -13,6 +14,18 @@ namespace AlbaVulpes.API.Controllers
     {
         public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+        }
+
+        public override IActionResult Read(Guid id)
+        {
+            var comic = UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
+
+            if (comic == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(comic);
         }
 
         public override IActionResult Create([FromBody] Comic comic)
@@ -25,18 +38,6 @@ namespace AlbaVulpes.API.Controllers
             var savedComic = UnitOfWork.GetRepository<Comic>().Create(comic);
 
             return CreatedAtAction("Read", new { id = savedComic.Id }, savedComic);
-        }
-
-        public override IActionResult Read(Guid id)
-        {
-            var comic = UnitOfWork.GetRepository<Comic>().Get(id);
-
-            if (comic == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(comic);
         }
 
         public override IActionResult Update(Guid id, [FromBody] Comic comic)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Resource;
 using Marten;
@@ -11,36 +13,14 @@ namespace AlbaVulpes.API.Repositories
         {
         }
 
-        public Comic AddArc(Guid comicId, Guid arcId)
+        public override Comic Get(Guid id)
         {
-            using (var session = Store.OpenSession())
+            using (var session = Store.QuerySession())
             {
-                var comic = session.Load<Comic>(comicId);
-                var arc = session.Load<Arc>(arcId);
-
-                comic.Arcs.Add(new ArcInfo
-                {
-                    Id = arc.Id,
-                    Title = arc.Title,
-                    Number = arc.Number,
-                    CoverImageThumbnail = arc.CoverImageThumbnail
-                });
-
-                Update(comicId, comic);
-
-                return comic;
-            }
-        }
-
-        public Comic RemoveArc(Guid comicId, Guid arcId)
-        {
-            using (var session = Store.OpenSession())
-            {
-                var comic = session.Load<Comic>(comicId);
-
-                comic.Arcs.RemoveAll(a => a.Id == arcId);
-
-                Update(comicId, comic);
+                var comic = session.Load<Comic>(id);
+                comic.Arcs = session.Query<Arc>()
+                    .Where(arc => arc.ComicId == comic.Id)
+                    .ToList();
 
                 return comic;
             }
