@@ -11,9 +11,9 @@ namespace AlbaVulpes.API.Extensions
         public static void AddMarten(this IServiceCollection services)
         {
             services.AddScoped<IDocumentStore>(provider =>
-                DocumentStore.For(_ =>
+                DocumentStore.For(options =>
                 {
-                    _.Connection("host=localhost;port=5432;database=AlbaVulpes;username=albavulpes;password=asdfghjkl");
+                    options.Connection("host=localhost;port=5432;database=AlbaVulpes;username=albavulpes;password=asdfghjkl");
                 })
             );
         }

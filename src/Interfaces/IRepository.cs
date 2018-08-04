@@ -5,9 +5,9 @@ namespace AlbaVulpes.API.Interfaces
 {
     public interface IRepository<TModel> where TModel : ApiModel
     {
-        TModel GetSingle(Guid id);
+        TModel Get(Guid id);
         TModel Create(TModel data);
         TModel Update(Guid id, TModel data);
-        TModel RemoveSingle(Guid id);
+        TModel Delete(Guid id);
     }
 }
