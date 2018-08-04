@@ -15,7 +15,7 @@ namespace AlbaVulpes.API.Base
             Store = documentStore;
         }
 
-        public virtual TModel GetSingle(Guid id)
+        public virtual TModel Get(Guid id)
         {
             using (var session = Store.QuerySession())
             {
@@ -30,11 +30,6 @@ namespace AlbaVulpes.API.Base
             using (var session = Store.OpenSession())
             {
                 session.Insert(data);
-                session.SaveChanges();
-
-                data.ComputeHash();
-
-                session.Update(data);
                 session.SaveChanges();
 
                 return data;
@@ -58,8 +53,6 @@ namespace AlbaVulpes.API.Base
 
             using (var session = Store.OpenSession())
             {
-                data.ComputeHash();
-
                 session.Update(data);
                 session.SaveChanges();
 
@@ -67,7 +60,7 @@ namespace AlbaVulpes.API.Base
             }
         }
 
-        public virtual TModel RemoveSingle(Guid id)
+        public virtual TModel Delete(Guid id)
         {
             using (var session = Store.OpenSession())
             {

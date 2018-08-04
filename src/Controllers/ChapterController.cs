@@ -22,41 +22,19 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var newChapter = new Chapter
-            {
-                ChapterNumber = chapter.ChapterNumber,
-                Title = chapter.Title,
-                Pages = chapter.Pages,
-                ArcId = chapter.ArcId
-            };
+            var savedChapter = UnitOfWork.GetRepository<Chapter>().Create(chapter);
 
-            UnitOfWork.GetRepository<Chapter>().Create(newChapter);
-
-            Response.Headers["ETag"] = newChapter.Hash;
-
-            return CreatedAtAction("Read", new { id = newChapter.Id }, newChapter);
+            return CreatedAtAction("Read", new { id = savedChapter.Id }, savedChapter);
         }
 
         public override IActionResult Read(Guid id)
         {
-            var chapter = UnitOfWork.GetRepository<Chapter>().GetSingle(id);
+            var chapter = UnitOfWork.GetRepository<Chapter>().Get(id);
 
             if (chapter == null)
             {
                 return NotFound();
             }
-
-            var requestHash = Request.Headers["If-None-Match"];
-
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == chapter.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-
-            Response.Headers["ETag"] = chapter.Hash;
 
             return Ok(chapter);
         }
@@ -76,14 +54,12 @@ namespace AlbaVulpes.API.Controllers
                 return NotFound();
             }
 
-            Response.Headers["ETag"] = updatedChapter.Hash;
-
             return Ok(updatedChapter);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            var chapterToDelete = UnitOfWork.GetRepository<Chapter>().RemoveSingle(id);
+            var chapterToDelete = UnitOfWork.GetRepository<Chapter>().Delete(id);
 
             if (chapterToDelete == null)
             {

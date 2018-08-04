@@ -22,44 +22,21 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var newComic = new Comic
-            {
-                Title = comic.Title,
-                Author = comic.Author,
-                Arcs = comic.Arcs,
-                CoverImageFullSize = comic.CoverImageFullSize,
-                CoverImageThumbnail = comic.CoverImageThumbnail
-            };
+            var savedComic = UnitOfWork.GetRepository<Comic>().Create(comic);
 
-            UnitOfWork.GetRepository<Comic>().Create(newComic);
-
-            Response.Headers["ETag"] = newComic.Hash;
-
-            return CreatedAtAction("Read", new { id = newComic.Id }, newComic);
+            return CreatedAtAction("Read", new { id = savedComic.Id }, savedComic);
         }
 
         public override IActionResult Read(Guid id)
         {
-            var comic = UnitOfWork.GetRepository<Comic>().GetSingle(id);
+            var comic = UnitOfWork.GetRepository<Comic>().Get(id);
 
             if (comic == null)
             {
                 return NotFound();
             }
 
-            var requestHash = Request.Headers["If-None-Match"];
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == comic.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-
-            Response.Headers["ETag"] = comic.Hash;
-
             return Ok(comic);
-
         }
 
         public override IActionResult Update(Guid id, [FromBody] Comic comic)
@@ -76,14 +53,12 @@ namespace AlbaVulpes.API.Controllers
                 return NotFound();
             }
 
-            Response.Headers["ETag"] = updatedComic.Hash;
-
             return Ok(updatedComic);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            var comicToDelete = UnitOfWork.GetRepository<Comic>().RemoveSingle(id);
+            var comicToDelete = UnitOfWork.GetRepository<Comic>().Delete(id);
 
             if (comicToDelete == null)
             {

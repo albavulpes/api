@@ -23,43 +23,19 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var newArc = new Arc
-            {
-                Number = arc.Number,
-                Title = arc.Title,
-                Chapters = arc.Chapters,
-                CoverImageThumbnail = arc.CoverImageThumbnail,
-                CoverImageFullSize = arc.CoverImageFullSize,
-                ComicId = arc.ComicId
-            };
+            var savedArc = UnitOfWork.GetRepository<Arc>().Create(arc);
 
-            UnitOfWork.GetRepository<Arc>().Create(newArc);
-            UnitOfWork.GetRepository<Comic, ComicRepository>().AddArc(newArc.ComicId, newArc.Id);
-
-            Response.Headers["ETag"] = newArc.Hash;
-
-            return CreatedAtAction("Read", new { id = newArc.Id }, newArc);
+            return CreatedAtAction("Read", new { id = savedArc.Id }, savedArc);
         }
 
         public override IActionResult Read(Guid id)
         {
-            var arc = UnitOfWork.GetRepository<Arc>().GetSingle(id);
+            var arc = UnitOfWork.GetRepository<Arc>().Get(id);
 
             if (arc == null)
             {
                 return NotFound();
             }
-
-            var requestHash = Request.Headers["If-None-Match"];
-
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == arc.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-            Response.Headers["ETag"] = arc.Hash;
 
             return Ok(arc);
         }
@@ -78,21 +54,17 @@ namespace AlbaVulpes.API.Controllers
                 return NotFound();
             }
 
-            Response.Headers["ETag"] = updatedArc.Hash;
-
             return Ok(updatedArc);
         }
 
         public override IActionResult Delete(Guid id)
         {
-            var deletedArc = UnitOfWork.GetRepository<Arc>().RemoveSingle(id);
+            var deletedArc = UnitOfWork.GetRepository<Arc>().Delete(id);
 
             if (deletedArc == null)
             {
                 return NotFound();
             }
-
-            UnitOfWork.GetRepository<Comic, ComicRepository>().RemoveArc(deletedArc.ComicId, deletedArc.Id);
 
             return Ok(deletedArc);
         }
