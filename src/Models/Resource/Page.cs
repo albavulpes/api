@@ -1,17 +1,17 @@
 ﻿using System;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Models.Shared;
+using Marten.Schema;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class PageInfo : ApiModel
+    public class Page : ApiModel
     {
-        public int PageNumber { get; set; }
-        public string ImageThumbnail { get; set; }
-    }
-
-    public class Page : PageInfo
-    {
+        [ForeignKey(typeof(Chapter))]
         public Guid ChapterId { get; set; }
-        public string ImageFullSize { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public Image Image { get; set; }
     }
 }

@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Models.Shared;
+using Marten.Schema;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class ComicInfo : ApiModel
-    {
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public string CoverImageThumbnail { get; set; }
-    }
-    public class Comic : ComicInfo
+    public class Comic : ApiModel
     {
         public Comic()
         {
-            Arcs = new List<ArcInfo>();
+            Arcs = new List<Arc>();
         }
 
-        public string CoverImageFullSize { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public Image CoverImage { get; set; }
 
-        public List<ArcInfo> Arcs { get; set; }
+        public List<Arc> Arcs { get; set; }
     }
 }

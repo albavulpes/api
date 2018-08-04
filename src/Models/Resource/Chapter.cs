@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Models.Shared;
+using Marten.Schema;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class ChapterInfo : ApiModel
-    {
-        public string Title { get; set; }
-        public int ChapterNumber { get; set; }
-        public string CoverImageThumbnail { get; set; }
-    }
-
-    public class Chapter : ChapterInfo
+    public class Chapter : ApiModel
     {
         public Chapter()
         {
-            Pages = new List<PageInfo>();
+            Pages = new List<Page>();
         }
 
+        [ForeignKey(typeof(Arc))]
         public Guid ArcId { get; set; }
 
-        public List<PageInfo> Pages { get; set; }
+        public string Title { get; set; }
+        public int ChapterNumber { get; set; }
+        public Image CoverImage { get; set; }
+
+        public List<Page> Pages { get; set; }
     }
 }
