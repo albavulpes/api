@@ -16,7 +16,15 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        public override IActionResult Read(Guid id)
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var comics = UnitOfWork.GetRepository<Comic, ComicRepository>().GetAll();
+
+            return Ok(comics);
+        }
+
+        public override IActionResult Get(Guid id)
         {
             var comic = UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
 
@@ -28,6 +36,14 @@ namespace AlbaVulpes.API.Controllers
             return Ok(comic);
         }
 
+        [HttpGet("{id}/arcs")]
+        public IActionResult GetAllArcs(Guid id)
+        {
+            var arcs = UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
+
+            return Ok(arcs);
+        }
+
         public override IActionResult Create([FromBody] Comic comic)
         {
             if (comic == null)
@@ -37,7 +53,7 @@ namespace AlbaVulpes.API.Controllers
 
             var savedComic = UnitOfWork.GetRepository<Comic>().Create(comic);
 
-            return CreatedAtAction("Read", new { id = savedComic.Id }, savedComic);
+            return CreatedAtAction("Get", new { id = savedComic.Id }, savedComic);
         }
 
         public override IActionResult Update(Guid id, [FromBody] Comic comic)

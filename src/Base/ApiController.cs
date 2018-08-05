@@ -18,7 +18,7 @@ namespace AlbaVulpes.API.Base
         public abstract IActionResult Create([FromBody] TModel data);
 
         [HttpGet("{id}")]
-        public abstract IActionResult Read(Guid id);
+        public abstract IActionResult Get(Guid id);
 
         [HttpPut("{id}")]
         public abstract IActionResult Update(Guid id, [FromBody] TModel data);

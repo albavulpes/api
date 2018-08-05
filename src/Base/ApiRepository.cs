@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using AlbaVulpes.API.Interfaces;
@@ -13,6 +14,16 @@ namespace AlbaVulpes.API.Base
         public ApiRepository(IDocumentStore documentStore)
         {
             Store = documentStore;
+        }
+
+        public virtual List<TModel> GetAll()
+        {
+            using (var session = Store.QuerySession())
+            {
+                var data = session.Query<TModel>().ToList();
+
+                return data;
+            }
         }
 
         public virtual TModel Get(Guid id)

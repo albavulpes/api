@@ -6,7 +6,7 @@ namespace AlbaVulpes.API.Interfaces
 {
     public interface IRestController<in TModel> where TModel : ApiModel
     {
-        IActionResult Read(Guid id);
+        IActionResult Get(Guid id);
 
         IActionResult Create([FromBody]TModel data);
 

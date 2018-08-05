@@ -16,19 +16,7 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
-        public override IActionResult Create([FromBody] Arc arc)
-        {
-            if (arc == null)
-            {
-                return BadRequest();
-            }
-
-            var savedArc = UnitOfWork.GetRepository<Arc>().Create(arc);
-
-            return CreatedAtAction("Read", new { id = savedArc.Id }, savedArc);
-        }
-
-        public override IActionResult Read(Guid id)
+        public override IActionResult Get(Guid id)
         {
             var arc = UnitOfWork.GetRepository<Arc>().Get(id);
 
@@ -38,6 +26,23 @@ namespace AlbaVulpes.API.Controllers
             }
 
             return Ok(arc);
+        }
+
+        public override IActionResult Create([FromBody] Arc arc)
+        {
+            if (arc == null)
+            {
+                return BadRequest();
+            }
+
+            var savedArc = UnitOfWork.GetRepository<Arc, ArcRepository>().Create(arc);
+
+            if (savedArc == null)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtAction("Get", new { id = savedArc.Id }, savedArc);
         }
 
         public override IActionResult Update(Guid id, [FromBody] Arc arc)

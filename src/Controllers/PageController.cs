@@ -24,10 +24,10 @@ namespace AlbaVulpes.API.Controllers
 
             var savedPage = UnitOfWork.GetRepository<Page>().Create(page);
 
-            return CreatedAtAction("Read", new { id = savedPage.Id }, savedPage);
+            return CreatedAtAction("Get", new { id = savedPage.Id }, savedPage);
         }
 
-        public override IActionResult Read(Guid id)
+        public override IActionResult Get(Guid id)
         {
             var page = UnitOfWork.GetRepository<Page>().Get(id);
 

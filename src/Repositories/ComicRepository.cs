@@ -13,16 +13,15 @@ namespace AlbaVulpes.API.Repositories
         {
         }
 
-        public override Comic Get(Guid id)
+        public List<Arc> GetArcsForComic(Guid id)
         {
             using (var session = Store.QuerySession())
             {
-                var comic = session.Load<Comic>(id);
-                comic.Arcs = session.Query<Arc>()
-                    .Where(arc => arc.ComicId == comic.Id)
+                var arcs = session.Query<Arc>()
+                    .Where(arc => arc.ComicId == id)
                     .ToList();
 
-                return comic;
+                return arcs;
             }
         }
     }
