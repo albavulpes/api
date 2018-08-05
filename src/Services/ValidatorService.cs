@@ -10,11 +10,6 @@ namespace AlbaVulpes.API.Services
 {
     public class ValidatorService : IValidatorService
     {
-        public ValidatorService(IDocumentStore documentStore)
-        {
-
-        }
-
         public TValidator GetValidator<TModel, TValidator>() where TValidator : AbstractValidator<TModel>
         {
             return (TValidator)Activator.CreateInstance(typeof(TValidator));
