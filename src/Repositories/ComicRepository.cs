@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Resource;
 using Marten;
@@ -13,13 +14,13 @@ namespace AlbaVulpes.API.Repositories
         {
         }
 
-        public List<Arc> GetArcsForComic(Guid id)
+        public async Task<IReadOnlyList<Arc>> GetArcsForComic(Guid id)
         {
             using (var session = Store.QuerySession())
             {
-                var arcs = session.Query<Arc>()
+                var arcs = await session.Query<Arc>()
                     .Where(arc => arc.ComicId == id)
-                    .ToList();
+                    .ToListAsync();
 
                 return arcs;
             }

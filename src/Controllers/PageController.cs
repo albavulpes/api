@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
@@ -11,25 +12,25 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class PageController : ApiController<Page>
     {
-        public PageController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public PageController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
         }
 
-        public override IActionResult Create([FromBody] Page page)
+        public override async Task<IActionResult> Create([FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var savedPage = UnitOfWork.GetRepository<Page>().Create(page);
+            var savedPage = await UnitOfWork.GetRepository<Page>().Create(page);
 
             return CreatedAtAction("Get", new { id = savedPage.Id }, savedPage);
         }
 
-        public override IActionResult Get(Guid id)
+        public override async Task<IActionResult> Get(Guid id)
         {
-            var page = UnitOfWork.GetRepository<Page>().Get(id);
+            var page = await UnitOfWork.GetRepository<Page>().Get(id);
 
             if (page == null)
             {
@@ -39,14 +40,14 @@ namespace AlbaVulpes.API.Controllers
             return Ok(page);
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Page page)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var updatedPage = UnitOfWork.GetRepository<Page>().Update(id, page);
+            var updatedPage = await UnitOfWork.GetRepository<Page>().Update(id, page);
 
             if (updatedPage == null)
             {
@@ -56,9 +57,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedPage);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
-            var pageToDelete = UnitOfWork.GetRepository<Page>().Delete(id);
+            var pageToDelete = await UnitOfWork.GetRepository<Page>().Delete(id);
 
             if (pageToDelete == null)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,21 +15,21 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class ComicController : ApiController<Comic>
     {
-        public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ComicController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var comics = UnitOfWork.GetRepository<Comic, ComicRepository>().GetAll();
+            var comics = await UnitOfWork.GetRepository<Comic, ComicRepository>().GetAll();
 
             return Ok(comics);
         }
 
         public override async Task<IActionResult> Get(Guid id)
         {
-            var comic = UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
+            var comic = await UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
 
             if (comic == null)
             {
@@ -41,7 +42,7 @@ namespace AlbaVulpes.API.Controllers
         [HttpGet("{id}/arcs")]
         public async Task<IActionResult> GetAllArcs(Guid id)
         {
-            var arcs = UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
+            var arcs = await UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
 
             return Ok(arcs);
         }
@@ -50,12 +51,13 @@ namespace AlbaVulpes.API.Controllers
         {
             var validation = await ValidatorService.Validate<ComicValidator>(comic);
 
-            if (comic == null)
+            if (!validation.IsValid)
             {
-                return BadRequest();
+                var error = validation.Errors.FirstOrDefault();
+                return BadRequest(error?.ErrorMessage);
             }
 
-            var savedComic = UnitOfWork.GetRepository<Comic>().Create(comic);
+            var savedComic = await UnitOfWork.GetRepository<Comic>().Create(comic);
 
             return CreatedAtAction("Get", new { id = savedComic.Id }, savedComic);
         }
@@ -67,7 +69,7 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var updatedComic = UnitOfWork.GetRepository<Comic>().Update(id, comic);
+            var updatedComic = await UnitOfWork.GetRepository<Comic>().Update(id, comic);
 
             if (updatedComic == null)
             {
@@ -79,7 +81,7 @@ namespace AlbaVulpes.API.Controllers
 
         public override async Task<IActionResult> Delete(Guid id)
         {
-            var comicToDelete = UnitOfWork.GetRepository<Comic>().Delete(id);
+            var comicToDelete = await UnitOfWork.GetRepository<Comic>().Delete(id);
 
             if (comicToDelete == null)
             {

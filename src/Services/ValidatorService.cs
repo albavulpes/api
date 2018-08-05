@@ -10,14 +10,14 @@ namespace AlbaVulpes.API.Services
 {
     public class ValidatorService : IValidatorService
     {
-        public TValidator GetValidator<TModel, TValidator>() where TValidator : AbstractValidator<TModel>
+        public TValidator GetValidator<TValidator>() where TValidator : IValidator
         {
             return (TValidator)Activator.CreateInstance(typeof(TValidator));
         }
 
-        public async Task<ValidationResult> Validate<TValidator, TModel>(TModel model) where TValidator : AbstractValidator<TModel>
+        public async Task<ValidationResult> Validate<TValidator>(object model) where TValidator : IValidator
         {
-            var validator = GetValidator<TModel, TValidator>();
+            var validator = GetValidator<TValidator>();
 
             var results = await validator.ValidateAsync(model);
 

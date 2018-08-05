@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
@@ -11,25 +12,25 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class ChapterController : ApiController<Chapter>
     {
-        public ChapterController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ChapterController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
         }
 
-        public override IActionResult Create([FromBody] Chapter chapter)
+        public override async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var savedChapter = UnitOfWork.GetRepository<Chapter>().Create(chapter);
+            var savedChapter = await UnitOfWork.GetRepository<Chapter>().Create(chapter);
 
             return CreatedAtAction("Get", new { id = savedChapter.Id }, savedChapter);
         }
 
-        public override IActionResult Get(Guid id)
+        public override async Task<IActionResult> Get(Guid id)
         {
-            var chapter = UnitOfWork.GetRepository<Chapter>().Get(id);
+            var chapter = await UnitOfWork.GetRepository<Chapter>().Get(id);
 
             if (chapter == null)
             {
@@ -40,14 +41,14 @@ namespace AlbaVulpes.API.Controllers
         }
 
 
-        public override IActionResult Update(Guid id, [FromBody] Chapter chapter)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
         {
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var updatedChapter = UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
+            var updatedChapter = await UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
 
             if (updatedChapter == null)
             {
@@ -57,9 +58,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedChapter);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
-            var chapterToDelete = UnitOfWork.GetRepository<Chapter>().Delete(id);
+            var chapterToDelete = await UnitOfWork.GetRepository<Chapter>().Delete(id);
 
             if (chapterToDelete == null)
             {

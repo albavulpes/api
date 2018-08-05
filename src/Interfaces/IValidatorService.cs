@@ -6,8 +6,8 @@ namespace AlbaVulpes.API.Interfaces
 {
     public interface IValidatorService
     {
-        TValidator GetValidator<TModel, TValidator>() where TValidator : AbstractValidator<TModel>;
+        TValidator GetValidator<TValidator>() where TValidator : IValidator;
 
-        Task<ValidationResult> Validate<TValidator, TModel>(TModel model) where TValidator : AbstractValidator<TModel>;
+        Task<ValidationResult> Validate<TValidator>(object model) where TValidator : IValidator;
     }
 }
