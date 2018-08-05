@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories;
+using AlbaVulpes.API.Validators;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -17,14 +19,14 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var comics = UnitOfWork.GetRepository<Comic, ComicRepository>().GetAll();
 
             return Ok(comics);
         }
 
-        public override IActionResult Get(Guid id)
+        public override async Task<IActionResult> Get(Guid id)
         {
             var comic = UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
 
@@ -37,15 +39,17 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet("{id}/arcs")]
-        public IActionResult GetAllArcs(Guid id)
+        public async Task<IActionResult> GetAllArcs(Guid id)
         {
             var arcs = UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
 
             return Ok(arcs);
         }
 
-        public override IActionResult Create([FromBody] Comic comic)
+        public override async Task<IActionResult> Create([FromBody] Comic comic)
         {
+            var validation = await ValidatorService.Validate<ComicValidator>(comic);
+
             if (comic == null)
             {
                 return BadRequest();
@@ -56,7 +60,7 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedComic.Id }, savedComic);
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Comic comic)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Comic comic)
         {
             if (comic == null)
             {
@@ -73,7 +77,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedComic);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
             var comicToDelete = UnitOfWork.GetRepository<Comic>().Delete(id);
 
