@@ -3,7 +3,7 @@ using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using Marten;
 
-namespace AlbaVulpes.API.Repositories
+namespace AlbaVulpes.API.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
