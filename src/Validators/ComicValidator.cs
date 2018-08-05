@@ -10,7 +10,8 @@ namespace AlbaVulpes.API.Validators
             RuleFor(x => x.Title).NotEmpty();
             RuleFor(x => x.Author).NotEmpty();
             RuleFor(x => x.ReleaseDate).NotNull();
-            RuleFor(x => x.CoverImage).SetValidator(new ImageValidator());
+
+            RuleFor(x => x.CoverImage).NotNull().SetValidator(new ImageValidator());
         }
     }
 }
