@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AlbaVulpes.API.Interfaces;
 using Marten;
 
@@ -16,42 +17,42 @@ namespace AlbaVulpes.API.Base
             Store = documentStore;
         }
 
-        public virtual List<TModel> GetAll()
+        public virtual async Task<IReadOnlyList<TModel>> GetAll()
         {
             using (var session = Store.QuerySession())
             {
-                var data = session.Query<TModel>().ToList();
+                var data = await session.Query<TModel>().ToListAsync();
 
                 return data;
             }
         }
 
-        public virtual TModel Get(Guid id)
+        public virtual async Task<TModel> Get(Guid id)
         {
             using (var session = Store.QuerySession())
             {
-                var data = session.Load<TModel>(id);
+                var data = await session.LoadAsync<TModel>(id);
 
                 return data;
             }
         }
 
-        public virtual TModel Create(TModel data)
+        public virtual async Task<TModel> Create(TModel data)
         {
             using (var session = Store.OpenSession())
             {
                 session.Insert(data);
-                session.SaveChanges();
+                await session.SaveChangesAsync();
 
                 return data;
             }
         }
 
-        public virtual TModel Update(Guid id, TModel data)
+        public virtual async Task<TModel> Update(Guid id, TModel data)
         {
             using (var session = Store.QuerySession())
             {
-                var dbData = session.Load<TModel>(id);
+                var dbData = await session.LoadAsync<TModel>(id);
 
                 if (dbData == null)
                 {
@@ -65,17 +66,17 @@ namespace AlbaVulpes.API.Base
             using (var session = Store.OpenSession())
             {
                 session.Update(data);
-                session.SaveChanges();
+                await session.SaveChangesAsync();
 
                 return data;
             }
         }
 
-        public virtual TModel Delete(Guid id)
+        public virtual async Task<TModel> Delete(Guid id)
         {
             using (var session = Store.OpenSession())
             {
-                var data = session.Load<TModel>(id);
+                var data = await session.LoadAsync<TModel>(id);
 
                 if (data == null)
                 {
@@ -83,7 +84,7 @@ namespace AlbaVulpes.API.Base
                 }
 
                 session.Delete<TModel>(id);
-                session.SaveChanges();
+                await session.SaveChangesAsync();
 
                 return data;
             }
