@@ -22,8 +22,11 @@ namespace AlbaVulpes.API
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            services.AddCors();
+
             services.AddMarten();
             services.AddUnitOfWork();
+
             services.AddValidator();
         }
 
@@ -34,6 +37,8 @@ namespace AlbaVulpes.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder.AllowAnyOrigin());
 
             app.UseMvc();
         }
