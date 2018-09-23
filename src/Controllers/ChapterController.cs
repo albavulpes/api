@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
-
+using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -12,76 +12,55 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class ChapterController : ApiController<Chapter>
     {
-        public ChapterController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ChapterController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
-
         }
 
-        public override IActionResult Create([FromBody] Chapter chapter)
+        public override async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var newChapter = new Chapter
-            {
-                Number = chapter.Number,
-                Title = chapter.Title,
-                Pages = chapter.Pages
-            };
+            var savedChapter = await UnitOfWork.GetRepository<Chapter>().Create(chapter);
 
-            UnitOfWork.GetRepository<Chapter>().Create(newChapter);
-            Response.Headers["ETag"] = newChapter.Hash;
-
-            return CreatedAtRoute("chapters", new { id = newChapter.Id }, newChapter);
+            return CreatedAtAction("Get", new { id = savedChapter.Id }, savedChapter);
         }
 
-        public override IActionResult Read(Guid id)
+        public override async Task<IActionResult> Get(Guid id)
         {
-            var chapter = UnitOfWork.GetRepository<Chapter>().GetSingle(id);
+            var chapter = await UnitOfWork.GetRepository<Chapter>().Get(id);
 
             if (chapter == null)
             {
                 return NotFound();
             }
 
-            var requestHash = Request.Headers["If-None-Match"];
-
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == chapter.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-
-            Response.Headers["ETag"] = chapter.Hash;
-
             return Ok(chapter);
         }
 
 
-        public override IActionResult Update(Guid id, [FromBody] Chapter chapter)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
         {
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var chapterToUpdate = UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
+            var updatedChapter = await UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
 
-            if (chapterToUpdate == null)
+            if (updatedChapter == null)
             {
-                NotFound();
+                return NotFound();
             }
 
-            return Ok(chapterToUpdate);
+            return Ok(updatedChapter);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
-            var chapterToDelete = UnitOfWork.GetRepository<Chapter>().RemoveSingle(id);
+            var chapterToDelete = await UnitOfWork.GetRepository<Chapter>().Delete(id);
 
             if (chapterToDelete == null)
             {

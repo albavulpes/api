@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AlbaVulpes.API.Interfaces;
 using Marten;
 
@@ -15,65 +17,74 @@ namespace AlbaVulpes.API.Base
             Store = documentStore;
         }
 
-        public virtual TModel GetSingle(Guid id)
+        public virtual async Task<IReadOnlyList<TModel>> GetAll()
         {
             using (var session = Store.QuerySession())
             {
-                var data = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var data = await session.Query<TModel>().ToListAsync();
 
                 return data;
             }
         }
 
-        public virtual TModel Create(TModel data)
+        public virtual async Task<TModel> Get(Guid id)
         {
-            using (var session = Store.OpenSession())
+            using (var session = Store.QuerySession())
             {
-                session.Store(data);
-                session.SaveChanges();
-
-                data.ComputeHash();
-
-                session.Update(data);
-                session.SaveChanges();
+                var data = await session.LoadAsync<TModel>(id);
 
                 return data;
             }
         }
 
-        public virtual TModel Update(Guid id, TModel data)
+        public virtual async Task<TModel> Create(TModel data)
         {
             using (var session = Store.OpenSession())
             {
-                var dbPage = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                session.Insert(data);
+                await session.SaveChangesAsync();
 
-                if (dbPage == null)
+                return data;
+            }
+        }
+
+        public virtual async Task<TModel> Update(Guid id, TModel data)
+        {
+            using (var session = Store.QuerySession())
+            {
+                var dbData = await session.LoadAsync<TModel>(id);
+
+                if (dbData == null)
                 {
                     return null;
                 }
 
-                data.ComputeHash();
+                // Ensure that the ID is provided in the model, and if not, set it anyway
+                data.Id = dbData.Id;
+            }
 
+            using (var session = Store.OpenSession())
+            {
                 session.Update(data);
-                session.SaveChanges();
+                await session.SaveChangesAsync();
 
                 return data;
             }
         }
 
-        public virtual TModel RemoveSingle(Guid id)
+        public virtual async Task<TModel> Delete(Guid id)
         {
             using (var session = Store.OpenSession())
             {
-                var data = session.Query<TModel>().FirstOrDefault(x => x.Id == id);
+                var data = await session.LoadAsync<TModel>(id);
 
                 if (data == null)
                 {
                     return null;
                 }
 
-                session.DeleteWhere<TModel>(x => x.Id == id);
-                session.SaveChanges();
+                session.Delete<TModel>(id);
+                await session.SaveChangesAsync();
 
                 return data;
             }

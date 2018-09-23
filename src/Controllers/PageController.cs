@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
+using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -11,74 +12,54 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class PageController : ApiController<Page>
     {
-        public PageController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public PageController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
         }
 
-        public override IActionResult Create([FromBody] Page page)
+        public override async Task<IActionResult> Create([FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var newPage = new Page
-            {
-                Number = page.Number,
-                Image = page.Image
-            };
+            var savedPage = await UnitOfWork.GetRepository<Page>().Create(page);
 
-            UnitOfWork.GetRepository<Page>().Create(newPage);
-
-            Response.Headers["ETag"] = newPage.Hash;
-
-            return CreatedAtRoute("pages", new { id = newPage.Id }, newPage);
+            return CreatedAtAction("Get", new { id = savedPage.Id }, savedPage);
         }
 
-        public override IActionResult Read(Guid id)
+        public override async Task<IActionResult> Get(Guid id)
         {
-            var page = UnitOfWork.GetRepository<Page>().GetSingle(id);
+            var page = await UnitOfWork.GetRepository<Page>().Get(id);
 
             if (page == null)
             {
                 return NotFound();
             }
-
-            var requestHash = Request.Headers["If-None-Match"];
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                // Match the requested hash with the database hash
-                if (requestHash == page.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-
-            Response.Headers["ETag"] = page.Hash;
 
             return Ok(page);
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Page page)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var pageToUpdate = UnitOfWork.GetRepository<Page>().Update(id, page);
+            var updatedPage = await UnitOfWork.GetRepository<Page>().Update(id, page);
 
-            if (pageToUpdate == null)
+            if (updatedPage == null)
             {
                 return NotFound();
             }
 
-            return Ok(pageToUpdate);
+            return Ok(updatedPage);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
-            var pageToDelete = UnitOfWork.GetRepository<Page>().RemoveSingle(id);
+            var pageToDelete = await UnitOfWork.GetRepository<Page>().Delete(id);
 
             if (pageToDelete == null)
             {

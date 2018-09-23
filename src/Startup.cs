@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Marten;
 using Newtonsoft.Json.Serialization;
 
 namespace AlbaVulpes.API
@@ -23,8 +22,12 @@ namespace AlbaVulpes.API
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            services.AddCors();
+
             services.AddMarten();
             services.AddUnitOfWork();
+
+            services.AddValidator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +37,8 @@ namespace AlbaVulpes.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder.AllowAnyOrigin());
 
             app.UseMvc();
         }

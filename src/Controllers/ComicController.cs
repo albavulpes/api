@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
+using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Repositories;
+using AlbaVulpes.API.Validators;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -11,75 +15,73 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class ComicController : ApiController<Comic>
     {
-        public ComicController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ComicController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
-
-        }
-        public override IActionResult Create([FromBody] Comic comic)
-        {
-            if (comic == null)
-            {
-                return BadRequest();
-            }
-
-            var newComic = new Comic
-            {
-                Title = comic.Title,
-                Author = comic.Author,
-                Arcs = comic.Arcs,
-                CoverImage = comic.CoverImage
-            };
-            UnitOfWork.GetRepository<Comic>().Create(newComic);
-
-            Response.Headers["ETag"] = newComic.Hash;
-
-            return CreatedAtRoute("comics", new { id = newComic.Id }, newComic);
         }
 
-        public override IActionResult Read(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var comic = UnitOfWork.GetRepository<Comic>().GetSingle(id);
+            var comics = await UnitOfWork.GetRepository<Comic, ComicRepository>().GetAll();
+
+            return Ok(comics);
+        }
+
+        public override async Task<IActionResult> Get(Guid id)
+        {
+            var comic = await UnitOfWork.GetRepository<Comic, ComicRepository>().Get(id);
 
             if (comic == null)
             {
                 return NotFound();
             }
-
-            var requestHash = Request.Headers["If-None-Match"];
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == comic.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-
-            Response.Headers["ETag"] = comic.Hash;
 
             return Ok(comic);
-
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Comic comic)
+        [HttpGet("{id}/arcs")]
+        public async Task<IActionResult> GetAllArcs(Guid id)
+        {
+            var arcs = await UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
+
+            return Ok(arcs);
+        }
+
+        public override async Task<IActionResult> Create([FromBody] Comic comic)
+        {
+            var validation = await ValidatorService.Validate<ComicValidator>(comic);
+
+            if (!validation.IsValid)
+            {
+                var error = validation.Errors.FirstOrDefault();
+                return BadRequest(error?.ErrorMessage);
+            }
+
+            var savedComic = await UnitOfWork.GetRepository<Comic>().Create(comic);
+
+            return CreatedAtAction("Get", new { id = savedComic.Id }, savedComic);
+        }
+
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Comic comic)
         {
             if (comic == null)
             {
                 return BadRequest();
             }
 
-            var comicToUpdate = UnitOfWork.GetRepository<Comic>().Update(id, comic);
+            var updatedComic = await UnitOfWork.GetRepository<Comic>().Update(id, comic);
 
-            if (comicToUpdate == null)
+            if (updatedComic == null)
             {
                 return NotFound();
             }
 
-            return Ok(comicToUpdate);
+            return Ok(updatedComic);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Delete(Guid id)
         {
-            var comicToDelete = UnitOfWork.GetRepository<Comic>().RemoveSingle(id);
+            var comicToDelete = await UnitOfWork.GetRepository<Comic>().Delete(id);
 
             if (comicToDelete == null)
             {

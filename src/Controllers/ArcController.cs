@@ -1,91 +1,78 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AlbaVulpes.API.Models.Database;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
+using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Repositories;
 
 namespace AlbaVulpes.API.Controllers
 {
-    [Route("api/Arc")]
+    [Route("arcs")]
     [Produces("application/json")]
     public class ArcController : ApiController<Arc>
     {
-        public ArcController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ArcController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
-
         }
 
-        public override IActionResult Create([FromBody] Arc arc)
+        public override async Task<IActionResult> Get(Guid id)
         {
-            if (arc == null)
-            {
-                return BadRequest();
-            }
-
-            var newArc = new Arc
-            {
-                Number = arc.Number,
-                Title = arc.Title,
-                Chapters = arc.Chapters
-            };
-
-            UnitOfWork.GetRepository<Arc>().Create(newArc);
-            Response.Headers["ETag"] = newArc.Hash;
-
-            return CreatedAtRoute("arcs", new { id = newArc.Id }, newArc);
-        }
-
-        public override IActionResult Read(Guid id)
-        {
-            var arc = UnitOfWork.GetRepository<Arc>().GetSingle(id);
+            var arc = await UnitOfWork.GetRepository<Arc>().Get(id);
 
             if (arc == null)
             {
                 return NotFound();
             }
-
-            var requestHash = Request.Headers["If-None-Match"];
-
-            if (!string.IsNullOrEmpty(requestHash))
-            {
-                if (requestHash == arc.Hash)
-                {
-                    return StatusCode((int)HttpStatusCode.NotModified);
-                }
-            }
-            Response.Headers["ETag"] = arc.Hash;
 
             return Ok(arc);
         }
 
-        public override IActionResult Update(Guid id, [FromBody] Arc arc)
+        public override async Task<IActionResult> Create([FromBody] Arc arc)
         {
             if (arc == null)
             {
                 return BadRequest();
             }
 
-            var arcToUpdate = UnitOfWork.GetRepository<Arc>().Update(id, arc);
+            var savedArc = await UnitOfWork.GetRepository<Arc, ArcRepository>().Create(arc);
 
-            if (arcToUpdate == null)
+            if (savedArc == null)
             {
-                NotFound();
+                return BadRequest();
             }
 
-            return Ok(arcToUpdate);
+            return CreatedAtAction("Get", new { id = savedArc.Id }, savedArc);
         }
 
-        public override IActionResult Delete(Guid id)
+        public override async Task<IActionResult> Update(Guid id, [FromBody] Arc arc)
         {
-            var arcToDelete = UnitOfWork.GetRepository<Arc>().RemoveSingle(id);
+            if (arc == null)
+            {
+                return BadRequest();
+            }
 
-            if (arcToDelete == null)
+            var updatedArc = await UnitOfWork.GetRepository<Arc>().Update(id, arc);
+
+            if (updatedArc == null)
             {
                 return NotFound();
             }
 
-            return Ok(arcToDelete);
+            return Ok(updatedArc);
+        }
+
+        public override async Task<IActionResult> Delete(Guid id)
+        {
+            var deletedArc = await UnitOfWork.GetRepository<Arc>().Delete(id);
+
+            if (deletedArc == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(deletedArc);
         }
     }
 }
