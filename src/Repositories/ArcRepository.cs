@@ -14,6 +14,23 @@ namespace AlbaVulpes.API.Repositories
         {
         }
 
+        public async Task<IReadOnlyList<Arc>> GetAllArcsForComic(Guid comicId)
+        {
+            if (comicId == Guid.Empty)
+            {
+                return null;
+            }
+            
+            using (var session = Store.QuerySession())
+            {
+                var arcsInComic = await session.Query<Arc>()
+                    .Where(a => a.ComicId == comicId)
+                    .ToListAsync();
+
+                return arcsInComic;
+            }
+        }
+
         public override async Task<Arc> Create(Arc arc)
         {
             var comicId = arc.ComicId;

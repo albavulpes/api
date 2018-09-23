@@ -17,6 +17,19 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllForComic(Guid comicId)
+        {
+            var arcs = await UnitOfWork.GetRepository<Arc, ArcRepository>().GetAllArcsForComic(comicId);
+
+            if (arcs == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(arcs);
+        }
+
         public override async Task<IActionResult> Get(Guid id)
         {
             var arc = await UnitOfWork.GetRepository<Arc>().Get(id);
