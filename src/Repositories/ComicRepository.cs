@@ -20,9 +20,18 @@ namespace AlbaVulpes.API.Repositories
         {
             using (var session = Store.QuerySession())
             {
-                var data = await session.Query<Comic>().ToListAsync();
+                var comics = await session.Query<Comic>().ToListAsync();
 
-                return data;
+                var results = comics
+                    .Select(async (comic) =>
+                    {
+                        var viewModel = Mapper.Map<ComicViewModel>(comic);
+                        viewModel.ArcsCount = await session.Query<Arc>().CountAsync(arc => arc.ComicId == comic.Id);
+
+                        return viewModel;
+                    });
+
+                return await Task.WhenAll(results.ToList());
             }
         }
 
