@@ -1,4 +1,5 @@
 using AlbaVulpes.API.Extensions;
+using AlbaVulpes.API.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,8 @@ namespace AlbaVulpes.API
             services.AddUnitOfWork();
 
             services.AddValidator();
+
+            AutomapperInitializer.InitMaps();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
