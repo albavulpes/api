@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Models.View;
+using AutoMapper;
 using Marten;
 
 namespace AlbaVulpes.API.Repositories
@@ -20,14 +22,22 @@ namespace AlbaVulpes.API.Repositories
             {
                 return null;
             }
-            
             using (var session = Store.QuerySession())
             {
-                var arcsInComic = await session.Query<Arc>()
-                    .Where(a => a.ComicId == comicId)
+                var arcs = await session.Query<Arc>()
+                    .Where(arc => arc.ComicId == comicId)
                     .ToListAsync();
 
-                return arcsInComic;
+                var results = arcs
+                    .Select(async (arc) =>
+                    {
+                        var viewModel = Mapper.Map<ArcViewModel>(arc);
+                        //viewModel.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ArcId == arc.Id);
+
+                        return viewModel;
+                    });
+
+                return await Task.WhenAll(results.ToList());
             }
         }
 

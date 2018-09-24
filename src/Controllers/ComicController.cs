@@ -39,14 +39,6 @@ namespace AlbaVulpes.API.Controllers
             return Ok(comic);
         }
 
-        [HttpGet("{id}/arcs")]
-        public async Task<IActionResult> GetAllArcs(Guid id)
-        {
-            var arcs = await UnitOfWork.GetRepository<Comic, ComicRepository>().GetArcsForComic(id);
-
-            return Ok(arcs);
-        }
-
         public override async Task<IActionResult> Create([FromBody] Comic comic)
         {
             var validation = await ValidatorService.Validate<ComicValidator>(comic);

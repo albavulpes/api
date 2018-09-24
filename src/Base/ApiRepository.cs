@@ -17,16 +17,6 @@ namespace AlbaVulpes.API.Base
             Store = documentStore;
         }
 
-        public virtual async Task<IReadOnlyList<TModel>> GetAll()
-        {
-            using (var session = Store.QuerySession())
-            {
-                var data = await session.Query<TModel>().ToListAsync();
-
-                return data;
-            }
-        }
-
         public virtual async Task<TModel> Get(Guid id)
         {
             using (var session = Store.QuerySession())
