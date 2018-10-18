@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
+using AlbaVulpes.API.Repositories;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -16,14 +17,33 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllForArc(Guid arcId)
+        {
+            var chapters = await UnitOfWork.GetRepository<Chapter, ChapterRepository>().GetAllChaptersForArc(arcId);
+
+            if (chapters == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(chapters);
+        }
+
         public override async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
+
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var savedChapter = await UnitOfWork.GetRepository<Chapter>().Create(chapter);
+            var savedChapter = await UnitOfWork.GetRepository<Chapter, ChapterRepository>().Create(chapter);
+
+            if (savedChapter == null)
+            {
+                return BadRequest();
+            }
 
             return CreatedAtAction("Get", new { id = savedChapter.Id }, savedChapter);
         }
