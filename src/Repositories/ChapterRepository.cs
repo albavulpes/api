@@ -31,14 +31,7 @@ namespace AlbaVulpes.API.Repositories
                 var results = chapters
                     .Select(async (chapter) =>
                     {
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<Chapter, ChapterViewModel>();
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-
-                        var viewModel = mapper.Map<Chapter, ChapterViewModel>(chapter);
+                        var viewModel = Mapper.Map<ChapterViewModel>(chapter);
                         viewModel.PagesCount = await session.Query<Page>().CountAsync(page => page.ChapterId == chapter.Id);
 
                         return viewModel;
