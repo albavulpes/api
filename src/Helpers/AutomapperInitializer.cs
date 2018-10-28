@@ -12,6 +12,7 @@ namespace AlbaVulpes.API.Helpers
             {
                 cfg.CreateMap<Comic, ComicViewModel>();
                 cfg.CreateMap<Arc, ArcViewModel>();
+                cfg.CreateMap<Chapter, ChapterViewModel>();
             });
         }
     }

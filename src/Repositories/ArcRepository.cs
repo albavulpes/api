@@ -32,7 +32,7 @@ namespace AlbaVulpes.API.Repositories
                     .Select(async (arc) =>
                     {
                         var viewModel = Mapper.Map<ArcViewModel>(arc);
-                        //viewModel.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ArcId == arc.Id);
+                        viewModel.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ArcId == arc.Id);
 
                         return viewModel;
                     });
