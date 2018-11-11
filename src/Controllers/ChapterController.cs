@@ -6,12 +6,13 @@ using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories;
+using AlbaVulpes.API.Repositories.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
     [Route("chapters")]
     [Produces("application/json")]
-    public class ChapterController : ApiController<Chapter>
+    public class ChapterController : ApiController, IRestController<Chapter>
     {
         public ChapterController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
@@ -20,7 +21,7 @@ namespace AlbaVulpes.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllForArc(Guid arcId)
         {
-            var chapters = await UnitOfWork.GetRepository<Chapter, ChapterRepository>().GetAllChaptersForArc(arcId);
+            var chapters = await UnitOfWork.GetRepository<ChapterRepository>().GetAllChaptersForArc(arcId);
 
             if (chapters == null)
             {
@@ -30,7 +31,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(chapters);
         }
 
-        public override async Task<IActionResult> Create([FromBody] Chapter chapter)
+        public async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
 
             if (chapter == null)
@@ -38,7 +39,7 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest();
             }
 
-            var savedChapter = await UnitOfWork.GetRepository<Chapter, ChapterRepository>().Create(chapter);
+            var savedChapter = await UnitOfWork.GetRepository<ChapterRepository>().Create(chapter);
 
             if (savedChapter == null)
             {
@@ -48,9 +49,9 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedChapter.Id }, savedChapter);
         }
 
-        public override async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            var chapter = await UnitOfWork.GetRepository<Chapter>().Get(id);
+            var chapter = await UnitOfWork.GetRepository<ChapterRepository>().Get(id);
 
             if (chapter == null)
             {
@@ -61,14 +62,14 @@ namespace AlbaVulpes.API.Controllers
         }
 
 
-        public override async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
         {
             if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var updatedChapter = await UnitOfWork.GetRepository<Chapter>().Update(id, chapter);
+            var updatedChapter = await UnitOfWork.GetRepository<ChapterRepository>().Update(id, chapter);
 
             if (updatedChapter == null)
             {
@@ -78,9 +79,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedChapter);
         }
 
-        public override async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var chapterToDelete = await UnitOfWork.GetRepository<Chapter>().Delete(id);
+            var chapterToDelete = await UnitOfWork.GetRepository<ChapterRepository>().Delete(id);
 
             if (chapterToDelete == null)
             {

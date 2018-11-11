@@ -17,11 +17,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="7.6.104" />
-    <PackageReference Include="Marten" Version="2.9.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
-    <PackageReference Include="Npgsql" Version="3.2.7" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.5.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.0.100" />
+    <PackageReference Include="Marten" Version="3.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
+    <PackageReference Include="Npgsql" Version="4.0.3" />
     <PackageReference Include="SharpSerializer.Core" Version="1.0.0" />
   </ItemGroup>
 

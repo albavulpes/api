@@ -4,13 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Resource;
-using AlbaVulpes.API.Models.View;
-using AutoMapper;
 using Marten;
 
-namespace AlbaVulpes.API.Repositories
+namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class PageRepository : ApiRepository<Page>
+    public class PageRepository : RestRepository<Page>
     {
         public PageRepository(IDocumentStore documentStore) : base(documentStore)
         {

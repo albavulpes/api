@@ -19,12 +19,7 @@ namespace AlbaVulpes.API.Services
             return Store;
         }
 
-        public ApiRepository<TModel> GetRepository<TModel>() where TModel : ApiModel
-        {
-            return new ApiRepository<TModel>(Store);
-        }
-
-        public TRepository GetRepository<TModel, TRepository>() where TModel : ApiModel where TRepository : ApiRepository<TModel>
+        public TRepository GetRepository<TRepository>() where TRepository : ApiRepository
         {
             return (TRepository)Activator.CreateInstance(typeof(TRepository), Store);
         }

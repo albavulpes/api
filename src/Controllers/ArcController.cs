@@ -6,12 +6,13 @@ using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories;
+using AlbaVulpes.API.Repositories.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
     [Route("arcs")]
     [Produces("application/json")]
-    public class ArcController : ApiController<Arc>
+    public class ArcController : ApiController, IRestController<Arc>
     {
         public ArcController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
@@ -20,7 +21,7 @@ namespace AlbaVulpes.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllForComic(Guid comicId)
         {
-            var arcs = await UnitOfWork.GetRepository<Arc, ArcRepository>().GetAllArcsForComic(comicId);
+            var arcs = await UnitOfWork.GetRepository<ArcRepository>().GetAllArcsForComic(comicId);
 
             if (arcs == null)
             {
@@ -30,9 +31,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arcs);
         }
 
-        public override async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            var arc = await UnitOfWork.GetRepository<Arc>().Get(id);
+            var arc = await UnitOfWork.GetRepository<ArcRepository>().Get(id);
 
             if (arc == null)
             {
@@ -42,14 +43,14 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arc);
         }
 
-        public override async Task<IActionResult> Create([FromBody] Arc arc)
+        public async Task<IActionResult> Create([FromBody] Arc arc)
         {
             if (arc == null)
             {
                 return BadRequest();
             }
 
-            var savedArc = await UnitOfWork.GetRepository<Arc, ArcRepository>().Create(arc);
+            var savedArc = await UnitOfWork.GetRepository<ArcRepository>().Create(arc);
 
             if (savedArc == null)
             {
@@ -59,14 +60,14 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedArc.Id }, savedArc);
         }
 
-        public override async Task<IActionResult> Update(Guid id, [FromBody] Arc arc)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Arc arc)
         {
             if (arc == null)
             {
                 return BadRequest();
             }
 
-            var updatedArc = await UnitOfWork.GetRepository<Arc>().Update(id, arc);
+            var updatedArc = await UnitOfWork.GetRepository<ArcRepository>().Update(id, arc);
 
             if (updatedArc == null)
             {
@@ -76,9 +77,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedArc);
         }
 
-        public override async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var deletedArc = await UnitOfWork.GetRepository<Arc>().Delete(id);
+            var deletedArc = await UnitOfWork.GetRepository<ArcRepository>().Delete(id);
 
             if (deletedArc == null)
             {

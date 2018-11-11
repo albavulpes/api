@@ -5,7 +5,7 @@ using AlbaVulpes.API.Base;
 
 namespace AlbaVulpes.API.Interfaces
 {
-    public interface IRepository<TModel> where TModel : ApiModel
+    public interface IRestRepository<TModel> where TModel : ApiModel
     {
         Task<TModel> Get(Guid id);
         Task<TModel> Create(TModel data);

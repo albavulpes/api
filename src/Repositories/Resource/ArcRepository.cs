@@ -8,9 +8,9 @@ using AlbaVulpes.API.Models.View;
 using AutoMapper;
 using Marten;
 
-namespace AlbaVulpes.API.Repositories
+namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class ArcRepository : ApiRepository<Arc>
+    public class ArcRepository : RestRepository<Arc>
     {
         public ArcRepository(IDocumentStore documentStore) : base(documentStore)
         {
