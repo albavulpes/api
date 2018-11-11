@@ -1,10 +1,15 @@
 ﻿using System;
 using AlbaVulpes.API.Base;
-using AlbaVulpes.API.Interfaces;
 using Marten;
 
 namespace AlbaVulpes.API.Services
 {
+    public interface IUnitOfWork
+    {
+        IDocumentStore GetStore();
+        TRepository GetRepository<TRepository>() where TRepository : ApiRepository;
+    }
+
     public class UnitOfWork : IUnitOfWork
     {
         protected readonly IDocumentStore Store;

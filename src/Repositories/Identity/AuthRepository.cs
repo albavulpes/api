@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Identity;
 using AlbaVulpes.API.Models.Requests;
 using Marten;
-using Marten.Linq;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace AlbaVulpes.API.Repositories.Identity
 {
@@ -15,7 +15,7 @@ namespace AlbaVulpes.API.Repositories.Identity
         {
         }
 
-        public async Task<User> AuthenticateUser(LoginRequest loginRequest)
+        public async Task<ClaimsPrincipal> AuthenticateUser(LoginRequest loginRequest)
         {
             using (var session = Store.QuerySession())
             {
@@ -23,6 +23,7 @@ namespace AlbaVulpes.API.Repositories.Identity
                     .Where(u => u.Email == loginRequest.Email || u.UserName == loginRequest.Email)
                     .FirstOrDefaultAsync();
 
+                // User doesn't exist
                 if (user == null)
                 {
                     return null;
@@ -30,12 +31,21 @@ namespace AlbaVulpes.API.Repositories.Identity
 
                 var isPasswordValid = BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password);
 
+                // Bad password
                 if (!isPasswordValid)
                 {
                     return null;
                 }
 
-                return user;
+                // User is legit, create a new claim identity
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                return claimsPrincipal;
             }
         }
 

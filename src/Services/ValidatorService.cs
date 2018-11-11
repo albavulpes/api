@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AlbaVulpes.API.Base;
-using AlbaVulpes.API.Interfaces;
-using AlbaVulpes.API.Models.Requests;
 using FluentValidation;
-using FluentValidation.Results;
-using Marten;
 
 namespace AlbaVulpes.API.Services
 {
+    public interface IValidatorService
+    {
+        TValidator GetValidator<TValidator>() where TValidator : IValidator;
+    }
+
     public class ValidatorService : IValidatorService
     {
         public TValidator GetValidator<TValidator>() where TValidator : IValidator

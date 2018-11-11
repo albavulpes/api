@@ -1,11 +1,13 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
-using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Requests;
 using AlbaVulpes.API.Repositories.Identity;
+using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Validators;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlbaVulpes.API.Controllers
@@ -29,12 +31,14 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest(error?.ErrorMessage);
             }
 
-            var authenticatedUser = await UnitOfWork.GetRepository<AuthRepository>().AuthenticateUser(request);
+            var claimsPrincipal = await UnitOfWork.GetRepository<AuthRepository>().AuthenticateUser(request);
 
-            if (authenticatedUser == null)
+            if (claimsPrincipal == null)
             {
                 return Unauthorized();
             }
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return Ok();
         }
@@ -56,6 +60,15 @@ namespace AlbaVulpes.API.Controllers
             {
                 return BadRequest();
             }
+
+            return Ok();
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
 
             return Ok();
         }
