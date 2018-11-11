@@ -8,9 +8,9 @@ using AlbaVulpes.API.Models.View;
 using AutoMapper;
 using Marten;
 
-namespace AlbaVulpes.API.Repositories
+namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class ChapterRepository : ApiRepository<Chapter>
+    public class ChapterRepository : RestRepository<Chapter>
     {
         public ChapterRepository(IDocumentStore documentStore) : base(documentStore)
         {

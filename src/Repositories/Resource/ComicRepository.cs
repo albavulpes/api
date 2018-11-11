@@ -8,9 +8,9 @@ using AlbaVulpes.API.Models.View;
 using AutoMapper;
 using Marten;
 
-namespace AlbaVulpes.API.Repositories
+namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class ComicRepository : ApiRepository<Comic>
+    public class ComicRepository : RestRepository<Comic>
     {
         public ComicRepository(IDocumentStore documentStore) : base(documentStore)
         {
