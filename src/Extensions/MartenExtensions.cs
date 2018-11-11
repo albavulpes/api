@@ -1,6 +1,4 @@
-﻿using AlbaVulpes.API.Interfaces;
-using AlbaVulpes.API.Services;
-using Marten;
+﻿using Marten;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AlbaVulpes.API.Extensions

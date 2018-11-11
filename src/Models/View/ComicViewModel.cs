@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AlbaVulpes.API.Models.Resource;
+﻿using AlbaVulpes.API.Models.Resource;
 
 namespace AlbaVulpes.API.Models.View
 {

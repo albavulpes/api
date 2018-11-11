@@ -1,5 +1,4 @@
-﻿using System;
-using AlbaVulpes.API.Models.Requests;
+﻿using AlbaVulpes.API.Models.Requests;
 using FluentValidation;
 
 namespace AlbaVulpes.API.Validators

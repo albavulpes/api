@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using AlbaVulpes.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Marten;
-using AlbaVulpes.API.Interfaces;
 
 namespace AlbaVulpes.API.Base
 {

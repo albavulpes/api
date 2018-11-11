@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Shared;
 using Marten.Schema;

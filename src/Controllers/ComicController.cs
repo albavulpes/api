@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
-using AlbaVulpes.API.Repositories;
 using AlbaVulpes.API.Repositories.Resource;
+using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Validators;
 
 namespace AlbaVulpes.API.Controllers
