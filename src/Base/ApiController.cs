@@ -6,8 +6,8 @@ using AlbaVulpes.API.Interfaces;
 
 namespace AlbaVulpes.API.Base
 {
-    public abstract class ApiController<TModel> : Controller, IRestController<TModel> where TModel : ApiModel
-    {
+    public abstract class ApiController : Controller
+    { 
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IValidatorService ValidatorService;
 
@@ -16,17 +16,5 @@ namespace AlbaVulpes.API.Base
             UnitOfWork = unitOfWork;
             ValidatorService = validator;
         }
-
-        [HttpPost]
-        public abstract Task<IActionResult> Create([FromBody] TModel data);
-
-        [HttpGet("{id}")]
-        public abstract Task<IActionResult> Get(Guid id);
-
-        [HttpPut("{id}")]
-        public abstract Task<IActionResult> Update(Guid id, [FromBody] TModel data);
-
-        [HttpDelete("{id}")]
-        public abstract Task<IActionResult> Delete(Guid id);
     }
 }

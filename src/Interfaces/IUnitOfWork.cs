@@ -6,7 +6,6 @@ namespace AlbaVulpes.API.Interfaces
     public interface IUnitOfWork
     {
         IDocumentStore GetStore();
-        ApiRepository<TModel> GetRepository<TModel>() where TModel : ApiModel;
-        TRepository GetRepository<TModel, TRepository>() where TModel : ApiModel where TRepository : ApiRepository<TModel>;
+        TRepository GetRepository<TRepository>() where TRepository : ApiRepository;
     }
 }
