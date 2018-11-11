@@ -12,21 +12,24 @@ namespace AlbaVulpes.API.Services
 
     public class UnitOfWork : IUnitOfWork
     {
-        protected readonly IDocumentStore Store;
+        protected readonly IDocumentStore _store;
 
-        public UnitOfWork(IDocumentStore documentStore)
+        private readonly IServiceProvider _serviceProvider;
+
+        public UnitOfWork(IDocumentStore documentStore, IServiceProvider serviceProvider)
         {
-            Store = documentStore;
+            _store = documentStore;
+            _serviceProvider = serviceProvider;
         }
 
         public IDocumentStore GetStore()
         {
-            return Store;
+            return _store;
         }
 
         public TRepository GetRepository<TRepository>() where TRepository : ApiRepository
         {
-            return (TRepository)Activator.CreateInstance(typeof(TRepository), Store);
+            return (TRepository)_serviceProvider.GetService(typeof(TRepository));
         }
     }
 }
