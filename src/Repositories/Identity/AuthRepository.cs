@@ -17,7 +17,7 @@ namespace AlbaVulpes.API.Repositories.Identity
 
         public async Task<ClaimsPrincipal> AuthenticateUser(LoginRequest loginRequest)
         {
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 var user = await session.Query<User>()
                     .Where(u => u.Email == loginRequest.Email || u.UserName == loginRequest.Email)
@@ -51,7 +51,7 @@ namespace AlbaVulpes.API.Repositories.Identity
 
         public async Task<User> RegisterNewUser(RegisterRequest registerRequest)
         {
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 if (session.Query<User>().Any(u => u.Email == registerRequest.Email || u.UserName == registerRequest.UserName))
                 {
@@ -59,7 +59,7 @@ namespace AlbaVulpes.API.Repositories.Identity
                 }
 
 
-                using (var openSession = Store.OpenSession())
+                using (var openSession = _store.OpenSession())
                 {
                     var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
 

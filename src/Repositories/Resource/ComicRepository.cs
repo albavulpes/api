@@ -18,7 +18,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public async Task<IReadOnlyList<Comic>> GetAll()
         {
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 var comics = await session.Query<Comic>().ToListAsync();
 
@@ -37,7 +37,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public new virtual async Task<ComicViewModel> Get(Guid id)
         {
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 var data = await session.LoadAsync<Comic>(id);
 

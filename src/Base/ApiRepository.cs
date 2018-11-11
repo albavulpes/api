@@ -4,11 +4,11 @@ namespace AlbaVulpes.API.Base
 {
     public class ApiRepository
     {
-        protected readonly IDocumentStore Store;
+        protected readonly IDocumentStore _store;
 
         public ApiRepository(IDocumentStore documentStore)
         {
-            Store = documentStore;
+            _store = documentStore;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace AlbaVulpes.API.Repositories.Resource
             {
                 return null;
             }
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 var arcs = await session.Query<Arc>()
                     .Where(arc => arc.ComicId == comicId)
@@ -50,7 +50,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 return null;
             }
 
-            using (var session = Store.QuerySession())
+            using (var session = _store.QuerySession())
             {
                 if (!session.Query<Comic>().Any(c => c.Id == comicId))
                 {
