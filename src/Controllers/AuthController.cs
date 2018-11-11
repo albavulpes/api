@@ -39,7 +39,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok();
         }
 
-        [HttpPost("register")]
+        [HttpPost("signup")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var validation = ValidatorService.GetValidator<RegisterRequestValidator>().Validate(request);
