@@ -8,9 +8,14 @@ namespace AlbaVulpes.API.Services
     {
         public AutomapperProfile()
         {
-            CreateMap<Comic, ComicViewModel>();
-            CreateMap<Arc, ArcViewModel>();
-            CreateMap<Chapter, ChapterViewModel>();
+            CreateMap<Comic, ComicViewModel>()
+                .ForMember(x => x.ArcsCount, c => c.Ignore());
+
+            CreateMap<Arc, ArcViewModel>()
+                .ForMember(x => x.ChaptersCount, c => c.Ignore());
+
+            CreateMap<Chapter, ChapterViewModel>()
+                .ForMember(x => x.PagesCount, c => c.Ignore());
         }
     }
 }
