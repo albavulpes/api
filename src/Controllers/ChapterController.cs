@@ -31,6 +31,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(chapters);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
 
@@ -49,6 +50,7 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedChapter.Id }, savedChapter);
         }
 
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var chapter = await UnitOfWork.GetRepository<ChapterRepository>().Get(id);
@@ -61,7 +63,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(chapter);
         }
 
-
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
         {
             if (chapter == null)
@@ -79,6 +81,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedChapter);
         }
 
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var chapterToDelete = await UnitOfWork.GetRepository<ChapterRepository>().Delete(id);

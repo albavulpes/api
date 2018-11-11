@@ -31,6 +31,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arcs);
         }
 
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var arc = await UnitOfWork.GetRepository<ArcRepository>().Get(id);
@@ -43,6 +44,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arc);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] Arc arc)
         {
             if (arc == null)
@@ -60,6 +62,7 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedArc.Id }, savedArc);
         }
 
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Arc arc)
         {
             if (arc == null)
@@ -77,6 +80,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedArc);
         }
 
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var deletedArc = await UnitOfWork.GetRepository<ArcRepository>().Delete(id);

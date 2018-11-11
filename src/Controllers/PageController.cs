@@ -30,6 +30,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(pages);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] Page page)
         {
             if (page == null)
@@ -42,6 +43,7 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedPage.Id }, savedPage);
         }
 
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var page = await UnitOfWork.GetRepository<PageRepository>().Get(id);
@@ -54,6 +56,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(page);
         }
 
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Page page)
         {
             if (page == null)
@@ -71,6 +74,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedPage);
         }
 
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var pageToDelete = await UnitOfWork.GetRepository<PageRepository>().Delete(id);
