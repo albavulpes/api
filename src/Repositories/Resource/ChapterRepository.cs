@@ -12,8 +12,11 @@ namespace AlbaVulpes.API.Repositories.Resource
 {
     public class ChapterRepository : RestRepository<Chapter>
     {
-        public ChapterRepository(IDocumentStore documentStore) : base(documentStore)
+        private readonly IMapper _mapper;
+
+        public ChapterRepository(IDocumentStore documentStore, IMapper autoMapper) : base(documentStore)
         {
+            _mapper = autoMapper;
         }
 
         public async Task<IReadOnlyList<Chapter>> GetAllChaptersForArc(Guid arcId)
@@ -31,7 +34,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 var results = chapters
                     .Select(async (chapter) =>
                     {
-                        var viewModel = Mapper.Map<ChapterViewModel>(chapter);
+                        var viewModel = _mapper.Map<ChapterViewModel>(chapter);
                         viewModel.PagesCount = await session.Query<Page>().CountAsync(page => page.ChapterId == chapter.Id);
 
                         return viewModel;

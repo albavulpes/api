@@ -12,8 +12,11 @@ namespace AlbaVulpes.API.Repositories.Resource
 {
     public class ArcRepository : RestRepository<Arc>
     {
-        public ArcRepository(IDocumentStore documentStore) : base(documentStore)
+        private readonly IMapper _mapper;
+
+        public ArcRepository(IDocumentStore documentStore, IMapper autoMapper) : base(documentStore)
         {
+            _mapper = autoMapper;
         }
 
         public async Task<IReadOnlyList<Arc>> GetAllArcsForComic(Guid comicId)
@@ -31,7 +34,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 var results = arcs
                     .Select(async (arc) =>
                     {
-                        var viewModel = Mapper.Map<ArcViewModel>(arc);
+                        var viewModel = _mapper.Map<ArcViewModel>(arc);
                         viewModel.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ArcId == arc.Id);
 
                         return viewModel;
