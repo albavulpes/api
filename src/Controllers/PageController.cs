@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
-using AlbaVulpes.API.Repositories;
+using AlbaVulpes.API.Repositories.Resource;
 
 namespace AlbaVulpes.API.Controllers
 {
     [Route("pages")]
     [Produces("application/json")]
-    public class PageController : ApiController<Page>
+    public class PageController : ApiController, IRestController<Page>
     {
         public PageController(IUnitOfWork unitOfWork, IValidatorService validator) : base(unitOfWork, validator)
         {
@@ -20,7 +20,7 @@ namespace AlbaVulpes.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllForChapter(Guid chapterId)
         {
-            var pages = await UnitOfWork.GetRepository<Page, PageRepository>().GetAllPagesForChapter(chapterId);
+            var pages = await UnitOfWork.GetRepository<PageRepository>().GetAllPagesForChapter(chapterId);
 
             if (pages == null)
             {
@@ -30,21 +30,21 @@ namespace AlbaVulpes.API.Controllers
             return Ok(pages);
         }
 
-        public override async Task<IActionResult> Create([FromBody] Page page)
+        public async Task<IActionResult> Create([FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var savedPage = await UnitOfWork.GetRepository<Page, PageRepository>().Create(page);
+            var savedPage = await UnitOfWork.GetRepository<PageRepository>().Create(page);
 
             return CreatedAtAction("Get", new { id = savedPage.Id }, savedPage);
         }
 
-        public override async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            var page = await UnitOfWork.GetRepository<Page>().Get(id);
+            var page = await UnitOfWork.GetRepository<PageRepository>().Get(id);
 
             if (page == null)
             {
@@ -54,14 +54,14 @@ namespace AlbaVulpes.API.Controllers
             return Ok(page);
         }
 
-        public override async Task<IActionResult> Update(Guid id, [FromBody] Page page)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Page page)
         {
             if (page == null)
             {
                 return BadRequest();
             }
 
-            var updatedPage = await UnitOfWork.GetRepository<Page>().Update(id, page);
+            var updatedPage = await UnitOfWork.GetRepository<PageRepository>().Update(id, page);
 
             if (updatedPage == null)
             {
@@ -71,9 +71,9 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedPage);
         }
 
-        public override async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var pageToDelete = await UnitOfWork.GetRepository<Page>().Delete(id);
+            var pageToDelete = await UnitOfWork.GetRepository<PageRepository>().Delete(id);
 
             if (pageToDelete == null)
             {
