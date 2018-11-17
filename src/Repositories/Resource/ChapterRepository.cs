@@ -32,19 +32,19 @@ namespace AlbaVulpes.API.Repositories.Resource
                     .ToListAsync();
 
                 var results = chapters
-                    .Select(async (chapter) =>
-                    {
-                        var viewModel = _mapper.Map<ChapterViewModel>(chapter);
-                        viewModel.PagesCount = await session.Query<Page>().CountAsync(page => page.ChapterId == chapter.Id);
+                    .Select(chap => _mapper.Map<ChapterViewModel>(chap))
+                    .ToList();
 
-                        return viewModel;
-                    });
+                foreach (var viewModel in results)
+                {
+                    viewModel.PagesCount = await session.Query<Page>().CountAsync(page => page.ChapterId == viewModel.Id);
+                }
 
-                return await Task.WhenAll(results.ToList());
+                return results;
             }
         }
 
-        public override async Task<Chapter> Create(Chapter chapter) 
+        public override async Task<Chapter> Create(Chapter chapter)
         {
             var arcId = chapter.ArcId;
 
