@@ -1,13 +1,10 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
-using AlbaVulpes.API.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace AlbaVulpes.API.Extensions
 {
@@ -30,6 +27,11 @@ namespace AlbaVulpes.API.Extensions
                         OnRedirectToLogin = (redirectContext) =>
                         {
                             redirectContext.HttpContext.Response.StatusCode = 401;
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = (redirectContext) =>
+                        {
+                            redirectContext.HttpContext.Response.StatusCode = 403;
                             return Task.CompletedTask;
                         }
                     };
