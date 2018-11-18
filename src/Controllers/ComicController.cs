@@ -8,6 +8,7 @@ using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Validators;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -26,6 +27,7 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok(comics);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -38,6 +40,8 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok(comic);
         }
+
+        [Authorize(Roles = "Creator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Comic comic)
         {
@@ -53,6 +57,8 @@ namespace AlbaVulpes.API.Controllers
 
             return CreatedAtAction("Get", new { id = savedComic.Id }, savedComic);
         }
+
+        [Authorize(Roles = "Creator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Comic comic)
         {
@@ -70,6 +76,8 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok(updatedComic);
         }
+
+        [Authorize(Roles = "Creator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

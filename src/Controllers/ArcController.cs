@@ -6,6 +6,7 @@ using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -43,6 +44,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(arc);
         }
 
+        [Authorize(Roles = "Creator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Arc arc)
         {
@@ -61,6 +63,7 @@ namespace AlbaVulpes.API.Controllers
             return CreatedAtAction("Get", new { id = savedArc.Id }, savedArc);
         }
 
+        [Authorize(Roles = "Creator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Arc arc)
         {
@@ -79,6 +82,7 @@ namespace AlbaVulpes.API.Controllers
             return Ok(updatedArc);
         }
 
+        [Authorize(Roles = "Creator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
