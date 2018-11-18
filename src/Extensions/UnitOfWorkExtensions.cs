@@ -1,4 +1,5 @@
-﻿using AlbaVulpes.API.Repositories.Resource;
+﻿using AlbaVulpes.API.Repositories.Identity;
+using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ namespace AlbaVulpes.API.Extensions
             services.AddScoped<ArcRepository>();
             services.AddScoped<ChapterRepository>();
             services.AddScoped<PageRepository>();
+            services.AddScoped<AuthRepository>();
         }
     }
 }
