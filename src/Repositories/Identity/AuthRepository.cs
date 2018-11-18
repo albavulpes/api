@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Identity;
 using AlbaVulpes.API.Models.Requests;
+using Baseline;
 using Marten;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -38,10 +40,14 @@ namespace AlbaVulpes.API.Repositories.Identity
                 }
 
                 // User is legit, create a new claim identity
-                var claims = new[]
+                var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, user.Email)
                 };
+
+                var userRoleClaims = user.Roles.Select(role => new Claim(ClaimTypes.Role, role.ToString())).ToList();
+                claims.AddRange(userRoleClaims);
+
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
@@ -58,7 +64,6 @@ namespace AlbaVulpes.API.Repositories.Identity
                     return null;
                 }
 
-
                 using (var openSession = _store.OpenSession())
                 {
                     var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
@@ -67,7 +72,8 @@ namespace AlbaVulpes.API.Repositories.Identity
                     {
                         Email = registerRequest.Email,
                         UserName = registerRequest.UserName,
-                        Password = passwordHash
+                        Password = passwordHash,
+                        Roles = new List<Role> { Role.Member }
                     };
 
                     openSession.Insert(newUser);
