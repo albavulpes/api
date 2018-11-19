@@ -26,7 +26,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 var comics = await session.Query<Comic>().ToListAsync();
 
                 var results = comics
-                    .Select(comic => _mapper.Map<ComicViewModel>(comic))
+                    .Select(comic => _mapper.Map<ComicResponse>(comic))
                     .ToList();
 
                 foreach (var comicViewModel in results)
@@ -38,13 +38,13 @@ namespace AlbaVulpes.API.Repositories.Resource
             }
         }
 
-        public new virtual async Task<ComicViewModel> Get(Guid id)
+        public new virtual async Task<ComicResponse> Get(Guid id)
         {
             using (var session = _store.QuerySession())
             {
                 var data = await session.LoadAsync<Comic>(id);
 
-                var result = _mapper.Map<ComicViewModel>(data);
+                var result = _mapper.Map<ComicResponse>(data);
 
                 result.ArcsCount = await session.Query<Arc>().CountAsync(arc => arc.ComicId == data.Id);
 

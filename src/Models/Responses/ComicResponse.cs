@@ -2,8 +2,8 @@
 
 namespace AlbaVulpes.API.Models.View
 {
-    public class ChapterViewModel : Chapter
+    public class ComicResponse : Comic
     {
-        public int PagesCount { get; set; }
+        public int ArcsCount { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                     .ToListAsync();
 
                 var results = arcs
-                    .Select(arc => _mapper.Map<ArcViewModel>(arc))
+                    .Select(arc => _mapper.Map<ArcResponse>(arc))
                     .ToList();
 
                 foreach (var arcViewModel in results)

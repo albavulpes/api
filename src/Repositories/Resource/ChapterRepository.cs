@@ -32,7 +32,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                     .ToListAsync();
 
                 var results = chapters
-                    .Select(chap => _mapper.Map<ChapterViewModel>(chap))
+                    .Select(chap => _mapper.Map<ChapterResponse>(chap))
                     .ToList();
 
                 foreach (var viewModel in results)

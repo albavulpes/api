@@ -83,5 +83,22 @@ namespace AlbaVulpes.API.Repositories.Identity
                 }
             }
         }
+
+        public async Task<User> GetUserByEmail(string emailAddress)
+        {
+            if (emailAddress == null)
+            {
+                return null;
+            }
+
+            using (var session = _store.QuerySession())
+            {
+                var user = await session.Query<User>()
+                    .Where(u => u.Email == emailAddress)
+                    .FirstOrDefaultAsync();
+
+                return user;
+            }
+        }
     }
 }
