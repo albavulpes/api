@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Requests;
+using AlbaVulpes.API.Models.Responses;
 using AlbaVulpes.API.Repositories.Identity;
 using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Validators;
@@ -20,8 +22,29 @@ namespace AlbaVulpes.API.Controllers
         {
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Status()
+        {
+            var user = HttpContext.User;
+            var userEmail = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (userEmail == null)
+            {
+                return Unauthorized();
+            }
+
+            var dbUser = await UnitOfWork.GetRepository<AuthRepository>().GetUserByEmail(userEmail);
+
+            return Ok(new StatusResponse
+            {
+                Email = dbUser.Email,
+                UserName = dbUser.UserName
+            });
+        }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var validation = ValidatorService.GetValidator<LoginRequestValidator>().Validate(request);
 
@@ -44,7 +67,7 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var validation = ValidatorService.GetValidator<RegisterRequestValidator>().Validate(request);
 
@@ -64,8 +87,8 @@ namespace AlbaVulpes.API.Controllers
             return Ok();
         }
 
-        [HttpPost("logout")]
         [Authorize]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
