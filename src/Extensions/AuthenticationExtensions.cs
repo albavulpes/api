@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,6 +23,8 @@ namespace AlbaVulpes.API.Extensions
                 {
                     options.Cookie.Name = cookieName;
                     options.Cookie.SameSite = SameSiteMode.None;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.SlidingExpiration = true;
                     options.Events = new CookieAuthenticationEvents
                     {
                         OnRedirectToLogin = (redirectContext) =>
