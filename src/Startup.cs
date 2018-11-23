@@ -27,7 +27,7 @@ namespace AlbaVulpes.API
 
             services.AddCors();
 
-            services.AddMarten();
+            services.AddMarten(Configuration);
             services.AddUnitOfWork();
 
             services.AddValidator();
@@ -45,7 +45,12 @@ namespace AlbaVulpes.API
 
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowCredentials());
+            app.UseCors(builder => builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+                .AllowCredentials()
+            );
 
             app.UseAuthentication();
 
