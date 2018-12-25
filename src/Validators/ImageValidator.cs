@@ -7,7 +7,6 @@ namespace AlbaVulpes.API.Validators
     {
         public ImageValidator()
         {
-            RuleFor(x => x.Thumbnail).NotEmpty();
             RuleFor(x => x.FullSize).NotEmpty();
         }
     }
