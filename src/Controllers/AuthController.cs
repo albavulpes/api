@@ -58,7 +58,7 @@ namespace AlbaVulpes.API.Controllers
 
             if (claimsPrincipal == null)
             {
-                return Unauthorized();
+                return BadRequest();
             }
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
