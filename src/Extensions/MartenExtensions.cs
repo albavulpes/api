@@ -1,5 +1,6 @@
 ﻿using AlbaVulpes.API.Models.Config;
 using Marten;
+using Marten.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -18,6 +19,10 @@ namespace AlbaVulpes.API.Extensions
                 DocumentStore.For(options =>
                 {
                     options.Connection($"host={dbConfig.Host};port={dbConfig.Port};database={dbConfig.Name};username={dbConfig.Username};password={dbConfig.Password}");
+                    options.Serializer(new JsonNetSerializer
+                    {
+                        EnumStorage = EnumStorage.AsString
+                    });
                 })
             );
         }

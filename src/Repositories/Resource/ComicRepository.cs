@@ -10,7 +10,7 @@ using Marten;
 
 namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class ComicRepository : RestRepository<Comic>
+    public class ComicRepository : ApiRepository
     {
         private readonly IMapper _mapper;
 
@@ -26,6 +26,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 var comics = await session.Query<Comic>().ToListAsync();
 
                 var results = comics
+                    .OrderByDescending(comic => comic.CreatedDate)
                     .Select(comic => _mapper.Map<ComicResponse>(comic))
                     .ToList();
 
@@ -38,7 +39,7 @@ namespace AlbaVulpes.API.Repositories.Resource
             }
         }
 
-        public new virtual async Task<ComicResponse> Get(Guid id)
+        public async Task<ComicResponse> Get(Guid id)
         {
             using (var session = _store.QuerySession())
             {
@@ -49,6 +50,61 @@ namespace AlbaVulpes.API.Repositories.Resource
                 result.ArcsCount = await session.Query<Arc>().CountAsync(arc => arc.ComicId == data.Id);
 
                 return result;
+            }
+        }
+
+        public virtual async Task<Comic> Create(Comic data)
+        {
+            data.CreatedDate = DateTime.Now;
+
+            using (var session = _store.OpenSession())
+            {
+                session.Insert(data);
+                await session.SaveChangesAsync();
+
+                return data;
+            }
+        }
+
+        public async Task<Comic> Update(Guid id, Comic data)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var dbData = await session.LoadAsync<Comic>(id);
+
+                if (dbData == null)
+                {
+                    return null;
+                }
+                
+                data.Id = dbData.Id;
+                data.CreatedDate = dbData.CreatedDate;
+            }
+
+            using (var session = _store.OpenSession())
+            {
+                session.Update(data);
+                await session.SaveChangesAsync();
+
+                return data;
+            }
+        }
+
+        public virtual async Task<Comic> Delete(Guid id)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var data = await session.LoadAsync<Comic>(id);
+
+                if (data == null)
+                {
+                    return null;
+                }
+
+                session.Delete<Comic>(id);
+                await session.SaveChangesAsync();
+
+                return data;
             }
         }
     }
