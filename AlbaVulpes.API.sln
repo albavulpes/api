@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbaVulpes.API", "src\AlbaVulpes.API.csproj", "{CC6CFF5A-2548-4B75-A6CF-FABD363A0C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlbaVulpes.API", "src\AlbaVulpes.API.csproj", "{CC6CFF5A-2548-4B75-A6CF-FABD363A0C42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{D6BAB298-A58F-48E3-8EBA-1F6736D4CC3B}"
+	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
+		build.ps1 = build.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
