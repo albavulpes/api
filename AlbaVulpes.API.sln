@@ -9,6 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{D6BAB298
 	ProjectSection(SolutionItems) = preProject
 		build.cake = build.cake
 		build.ps1 = build.ps1
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{21FE47E8-59B9-4551-9126-BB4ABDD49007}"
+	ProjectSection(SolutionItems) = preProject
+		aws-windows-deployment-manifest.json = aws-windows-deployment-manifest.json
 	EndProjectSection
 EndProject
 Global
