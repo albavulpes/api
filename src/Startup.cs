@@ -1,4 +1,5 @@
 using AlbaVulpes.API.Extensions;
+using AlbaVulpes.API.Models.Config;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,13 @@ namespace AlbaVulpes.API
             services.AddValidator();
 
             services.AddCookieAuthentication(Configuration);
+
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                var authSettings = Configuration.GetSection("AuthSettings").Get<AuthSettings>();
+                googleOptions.ClientId = authSettings.Google.ClientId;
+                googleOptions.ClientSecret = authSettings.Google.ClientSecret;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
