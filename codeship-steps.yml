@@ -1,6 +1,3 @@
-- name: restore
+- name: build
   service: aspnetapp
-  command: dotnet restore
-- name: publish
-  service: aspnetapp
-  command: dotnet publish -c Release -o out
+  command: powershell .\build.ps1
