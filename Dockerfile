@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:sdk AS build-env
+FROM microsoft/powershell AS build-env
 WORKDIR /app
 
 # Copy everything
