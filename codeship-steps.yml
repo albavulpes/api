@@ -1,6 +1,6 @@
 - name: restore
-    service: aspnetapp
-    command: dotnet restore
+  service: aspnetapp
+  command: dotnet restore
 - name: publish
-    service: aspnetapp
-    command: dotnet publish -c Release -o out
+  service: aspnetapp
+  command: dotnet publish -c Release -o out
