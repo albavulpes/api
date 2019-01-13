@@ -1,0 +1,4 @@
+aspnetapp:
+  build:
+    image: aspnetapp
+    dockerfile: Dockerfile
