@@ -1,3 +1,0 @@
-- name: build
-  service: aspnetapp
-  command: powershell .\build.ps1
