@@ -35,12 +35,12 @@ namespace AlbaVulpes.API
 
             services.AddCookieAuthentication(Configuration);
 
-            services.AddAuthentication().AddGoogle(googleOptions =>
-            {
-                var authSettings = Configuration.GetSection("AuthSettings").Get<AuthSettings>();
-                googleOptions.ClientId = authSettings.Google.ClientId;
-                googleOptions.ClientSecret = authSettings.Google.ClientSecret;
-            });
+            //services.AddAuthentication().AddGoogle(googleOptions =>
+            //{
+            //    var authSettings = Configuration.GetSection("AuthSettings").Get<AuthSettings>();
+            //    googleOptions.ClientId = authSettings.Google.ClientId;
+            //    googleOptions.ClientSecret = authSettings.Google.ClientSecret;
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
