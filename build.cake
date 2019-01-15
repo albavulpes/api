@@ -25,7 +25,7 @@ Task("Build")
 			new DotNetCoreBuildSettings()
 			{
 				Configuration = configuration,
-				ArgumentCustomization = args => args.Append("--no-restore"),
+				NoRestore = true
 			});
 	});
 
@@ -38,7 +38,8 @@ Task("PublishDist")
             {
                 Configuration = configuration,
                 OutputDirectory = distDirectory,
-                ArgumentCustomization = args => args.Append("--no-restore"),
+				SelfContained = true,
+				Runtime = "win-x64"
             });
     });
 
