@@ -1,5 +1,4 @@
 # Project Strokes
-[![Build Status](https://ci.devops.albavulpes.com/buildStatus/icon?job=api/develop)](https://ci.devops.albavulpes.com/job/api/job/develop/)
 
 A web-comic application. More description will come soon.
 
