@@ -43,13 +43,32 @@ Task("PublishDist")
             });
     });
 
+Task("ZipDist")
+    .IsDependentOn("PublishDist")
+    .Does(() =>
+    {
+		var releaseZipPath = "./release/release.zip";
+
+		var releaseDir = System.IO.Path.GetDirectoryName(releaseZipPath);
+
+		CreateDirectory(releaseDir);
+		CleanDirectory(releaseDir);
+
+		Zip("./dist", releaseZipPath);
+
+		Information($"Created release zip at {releaseZipPath}");
+    });
+
 Task("FullBuild")
     .IsDependentOn("Clean")
     .IsDependentOn("Restore")
     .IsDependentOn("Build");
+	
+Task("Release")
+    .IsDependentOn("FullBuild")
+    .IsDependentOn("ZipDist");
 
 Task("Default")
-    .IsDependentOn("FullBuild")
-    .IsDependentOn("PublishDist");
+    .IsDependentOn("Release");
 	
 RunTarget(target);
