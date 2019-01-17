@@ -1,30 +1,32 @@
 ﻿using AlbaVulpes.API.Models.Config;
+using AlbaVulpes.API.Services;
 using Marten;
 using Marten.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
+using Microsoft.Extensions.Options;
 
 namespace AlbaVulpes.API.Extensions
 {
     public static class MartenExtensions
     {
-        public static void AddMarten(this IServiceCollection services, IConfiguration config)
+        public static void AddMarten(this IServiceCollection services)
         {
-            // configure strongly typed settings objects
-            var appSettings = config.GetSection("AppSettings").Get<AppSettings>();
-            var dbConfig = appSettings.Database;
-
             services.AddScoped<IDocumentStore>(provider =>
-                DocumentStore.For(options =>
+            {
+                var secretsManager = provider.GetService<ISecretsManagerService>();
+                var appSecrets = secretsManager.Get();
+
+                return DocumentStore.For(options =>
                 {
-                    options.Connection($"host={dbConfig.Host};port={dbConfig.Port};database={dbConfig.Name};username={dbConfig.Username};password={dbConfig.Password}");
+                    options.Connection($"host={appSecrets.Database_Host};port={appSecrets.Database_Port};database={appSecrets.Database_Name};username={appSecrets.Database_Username};password={appSecrets.Database_Password}");
+
                     options.Serializer(new JsonNetSerializer
                     {
                         EnumStorage = EnumStorage.AsString
                     });
-                })
-            );
+                });
+            });
         }
     }
 }

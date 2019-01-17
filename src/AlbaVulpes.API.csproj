@@ -6,18 +6,23 @@
 
   <ItemGroup>
     <Compile Remove="Database\**" />
+    <Compile Remove="dist\**" />
     <Compile Remove="wwwroot\**" />
     <Content Remove="Database\**" />
+    <Content Remove="dist\**" />
     <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="Database\**" />
+    <EmbeddedResource Remove="dist\**" />
     <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="Database\**" />
+    <None Remove="dist\**" />
     <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.3.2.39" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.5.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.0.100" />
     <PackageReference Include="Marten" Version="3.0.1" />

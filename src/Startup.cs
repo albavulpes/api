@@ -21,14 +21,17 @@ namespace AlbaVulpes.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             services.AddAutoMapper();
+            services.AddSecretsManager();
 
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             services.AddCors();
 
-            services.AddMarten(Configuration);
+            services.AddMarten();
             services.AddUnitOfWork();
 
             services.AddValidator();
