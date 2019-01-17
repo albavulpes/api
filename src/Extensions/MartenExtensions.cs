@@ -1,10 +1,7 @@
-﻿using AlbaVulpes.API.Models.Config;
-using AlbaVulpes.API.Services;
+﻿using AlbaVulpes.API.Services;
 using Marten;
 using Marten.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace AlbaVulpes.API.Extensions
 {
