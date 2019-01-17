@@ -3,16 +3,12 @@
     public class AppSettings
     {
         public string AuthCookieName { get; set; }
-
-        public DatabaseSettings Database { get; set; }
+        public AppAWSSettings AWS { get; set; }
     }
 
-    public class DatabaseSettings
+    public class AppAWSSettings
     {
-        public string Host { get; set; }
-        public string Port { get; set; }
-        public string Name { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string CredentialsProfileName { get; set; }
+        public string AppSecretsId { get; set; }
     }
 }
