@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
 				powershell '''
-					.\build.ps1 -Script build.cake
+					./build.ps1 -Script build.cake
 				'''
             }
         }
@@ -24,7 +24,7 @@ pipeline {
 					string(credentialsId: 'DevPublishMachine', variable: 'PublishMachine')
 				]) {
 					powershell '''
-						.\build.ps1 -Script deploy.cake ^
+						./build.ps1 -Script deploy.cake ^
 						--ScriptArgs '--machine="$PublishMachine"','--username="$PublishUsername"','--password="PublishPassword"'
 					'''
 				}
