@@ -38,7 +38,6 @@ Task("PublishDist")
             {
                 Configuration = configuration,
                 OutputDirectory = distDirectory,
-				NoRestore = true,
 				SelfContained = true,
 				Runtime = "win-x64"
             });
