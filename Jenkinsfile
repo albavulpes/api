@@ -25,7 +25,7 @@ pipeline {
 				]) {
 					powershell '''
 						./build.ps1 -Script deploy.cake ^
-						--ScriptArgs '--machine="$PublishMachine"','--username="$PublishUsername"','--password="PublishPassword"'
+						-ScriptArgs '-machine="$PublishMachine"','-username="$PublishUsername"','-password="PublishPassword"'
 					'''
 				}
 			}
