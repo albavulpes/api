@@ -7,11 +7,15 @@ var username = EnvironmentVariable("PUBLISH_CREDENTIALS_USR");
 var password = EnvironmentVariable("PUBLISH_CREDENTIALS_PSW");
 
 if (string.IsNullOrWhiteSpace(machine)) {
-	Information("Publish machine not provided.");
+	Error("Publish machine not provided.");
+
+	return;
 }
 
 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) {
-	Information("Publish credentials not provided.");
+	Error("Publish credentials not provided.");
+	
+	return;
 }
 
 Task("Deploy")
