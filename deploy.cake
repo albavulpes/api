@@ -2,9 +2,17 @@
 
 var target = Argument("target", "Default");
 
-var machine = Argument("machine");
-var username = Argument("username");
-var password = Argument("password");
+var machine = EnvironmentVariable("PUBLISH_MACHINE");
+var username = EnvironmentVariable("PUBLISH_CREDENTIALS_USR");
+var password = EnvironmentVariable("PUBLISH_CREDENTIALS_PSW");
+
+if (string.IsNullOrWhiteSpace(machine)) {
+	Information("Publish machine not provided.");
+}
+
+if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) {
+	Information("Publish credentials not provided.");
+}
 
 Task("Deploy")
     .Does(() =>

@@ -4,30 +4,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-				powershell '''
-					./build.ps1 -Script build.cake
-				'''
+				powershell './build.ps1 -Script build.cake'
             }
         }
 		stage('Deploy To Stage') {
 			when {
 				branch 'develop'
 			}
+			environment {
+				PUBLISH_CREDENTIALS = credentials('DevPublishCredentials')
+				PUBLISH_MACHINE = credentials('DevPublishMachine')
+			}
 			steps {
-				withCredentials([
-					[
-						$class: 'UsernamePasswordMultiBinding', 
-						credentialsId: 'DevPublishCredentials',
-						usernameVariable: 'PublishUsername', 
-						passwordVariable: 'PublishPassword'
-					],
-					string(credentialsId: 'DevPublishMachine', variable: 'PublishMachine')
-				]) {
-					powershell '''
-						./build.ps1 -Script deploy.cake ^
-						-ScriptArgs '-machine="$PublishMachine"','-username="$PublishUsername"','-password="PublishPassword"'
-					'''
-				}
+				powershell './build.ps1 -Script deploy.cake'
 			}
 		}
     }
