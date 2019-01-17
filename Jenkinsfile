@@ -22,7 +22,7 @@ pipeline {
 					string(credentialsId: 'DevPublishMachine', variable: 'PublishMachine')
 				]) {
 					powershell '''
-						./build.ps1 -Script deploy.cake -ScriptArgs '--machine="$PublishMachine" --username="$PublishUsername" --password="PublishPassword"'
+						./build.ps1 -Script deploy.cake --ScriptArgs '--machine="$PublishMachine" --username="$PublishUsername" --password="PublishPassword"'
 					'''
 				}
 			}
