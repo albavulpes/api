@@ -28,10 +28,7 @@ namespace AlbaVulpes.API.Services
 
         public AppSecrets Get()
         {
-            var credentialProfileStoreChain = new CredentialProfileStoreChain();
-            credentialProfileStoreChain.TryGetAWSCredentials(_appSettings.AWS.CredentialsProfileName, out var credentials);
-
-            var client = new AmazonSecretsManagerClient(credentials, new AmazonSecretsManagerConfig
+            var client = new AmazonSecretsManagerClient(new AmazonSecretsManagerConfig
             {
                 RegionEndpoint = RegionEndpoint.USEast1
             });
