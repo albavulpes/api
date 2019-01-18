@@ -4,6 +4,12 @@
     {
         public string AuthCookieName { get; set; }
         public AppAWSSettings AWS { get; set; }
+        public AppSeqSettings Seq { get; set; }
+    }
+
+    public class AppSeqSettings
+    {
+        public string ServerUrl { get; set; }
     }
 
     public class AppAWSSettings

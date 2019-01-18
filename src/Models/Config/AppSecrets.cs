@@ -7,5 +7,7 @@
         public string Database_Name { get; set; }
         public string Database_Username { get; set; }
         public string Database_Password { get; set; }
+
+        public string Seq_ApiKey { get; set; }
     }
 }
