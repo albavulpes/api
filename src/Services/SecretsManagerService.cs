@@ -1,8 +1,12 @@
 ﻿using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
 using Amazon;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -15,12 +19,14 @@ namespace AlbaVulpes.API.Services
 
     public class SecretsManagerService : ISecretsManagerService
     {
+        private readonly IConfiguration _config;
         private readonly AppSettings _appSettings;
 
         private AppSecrets _appSecrets;
 
-        public SecretsManagerService(IOptions<AppSettings> appSettings)
+        public SecretsManagerService(IConfiguration config, IOptions<AppSettings> appSettings)
         {
+            _config = config;
             _appSettings = appSettings.Value;
         }
 
@@ -29,14 +35,20 @@ namespace AlbaVulpes.API.Services
             if (_appSecrets != null)
                 return _appSecrets;
 
-            var client = new AmazonSecretsManagerClient(new AmazonSecretsManagerConfig
+            var awsOptions = _config.GetAWSOptions();
+
+            var isCredentialsResolved = new CredentialProfileStoreChain().TryGetAWSCredentials(awsOptions.Profile, out var awsCredentials);
+
+            if (!isCredentialsResolved)
             {
-                RegionEndpoint = RegionEndpoint.USEast1
-            });
+                throw new AmazonSecretsManagerException("Failed to resolve credentials.");
+            }
+
+            var client = new AmazonSecretsManagerClient(awsCredentials, awsOptions.Region);
 
             var request = new GetSecretValueRequest
             {
-                SecretId = _appSettings.AWS.AppSecretsId
+                SecretId = _appSettings.AppSecretsId
             };
 
             var response = Task.Run(async () => await client.GetSecretValueAsync(request)).Result;

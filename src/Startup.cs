@@ -22,14 +22,15 @@ namespace AlbaVulpes.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
-            services.AddAutoMapper();
-            services.AddSecretsManager();
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
 
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             services.AddCors();
+
+            services.AddAutoMapper();
+            services.AddSecretsManager();
 
             services.AddMarten();
             services.AddUnitOfWork();
