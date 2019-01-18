@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Identity;
 using AlbaVulpes.API.Models.Requests;
-using Baseline;
 using Marten;
 using Microsoft.AspNetCore.Authentication.Cookies;
 

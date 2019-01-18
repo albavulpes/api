@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Resource;
-using AlbaVulpes.API.Models.View;
+using AlbaVulpes.API.Models.Responses;
 using AutoMapper;
 using Marten;
 

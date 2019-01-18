@@ -1,5 +1,5 @@
 ﻿using AlbaVulpes.API.Models.Resource;
-using AlbaVulpes.API.Models.View;
+using AlbaVulpes.API.Models.Responses;
 using AutoMapper;
 
 namespace AlbaVulpes.API.Services
