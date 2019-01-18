@@ -63,7 +63,7 @@ namespace AlbaVulpes.API
 
             app.UseMvc();
 
-            app.UseCustomLogging();
+            app.UseConsoleLogging();
 
             if (env.IsDevelopment())
             {

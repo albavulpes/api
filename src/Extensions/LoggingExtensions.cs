@@ -1,4 +1,5 @@
-﻿using AlbaVulpes.API.Models.Config;
+﻿using System;
+using AlbaVulpes.API.Models.Config;
 using AlbaVulpes.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,32 +13,54 @@ namespace AlbaVulpes.API.Extensions
 {
     public static class LoggingExtensions
     {
-        public static void UseCustomLogging(this IApplicationBuilder builder)
+        private static void UpdateLoggingConfiguration(Action<LoggingConfiguration> updateAction)
         {
-            var config = new LoggingConfiguration();
+            var currentConfig = NLog.LogManager.Configuration ?? new LoggingConfiguration();
 
+            updateAction(currentConfig);
+
+            NLog.LogManager.Configuration = currentConfig;
+        }
+
+        public static void UseConsoleLogging(this IApplicationBuilder builder)
+        {
             var logconsole = new ConsoleTarget();
 
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);
+            UpdateLoggingConfiguration(config =>
+            {
+                config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);
+            });
 
-            NLog.LogManager.Configuration = config;
+            NLog.LogManager.GetCurrentClassLogger().Info("Console logging initialized.");
         }
 
         public static void UseSeqLogging(this IApplicationBuilder builder)
         {
             var appSettings = builder.ApplicationServices.GetService<IOptions<AppSettings>>().Value;
-            var appSecrets = builder.ApplicationServices.GetService<SecretsManagerService>().Get();
+            var appSecrets = builder.ApplicationServices.CreateScope().ServiceProvider.GetService<ISecretsManagerService>().Get();
 
-            var logseq = new SeqTarget
+            var seqTarget = new SeqTarget
             {
                 ServerUrl = appSettings.Seq.ServerUrl,
-                ApiKey = appSecrets.Seq_ApiKey
+                ApiKey = appSecrets.Seq_ApiKey,
+
             };
 
             // Ensures that writes to Seq do not block the application
-            var bufferingWrapper = new BufferingTargetWrapper(logseq);
+            var bufferingWrapper = new BufferingTargetWrapper
+            {
+                Name = "logseq",
+                BufferSize = 1000,
+                FlushTimeout = 2000,
+                WrappedTarget = seqTarget
+            };
 
-            NLog.LogManager.Configuration.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, bufferingWrapper);
+            UpdateLoggingConfiguration(config =>
+            {
+                config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, bufferingWrapper);
+            });
+
+            NLog.LogManager.GetCurrentClassLogger().Info("Seq logging initialized.");
         }
     }
 }
