@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
 using Amazon;
-using Amazon.Runtime;
-using Amazon.Runtime.CredentialManagement;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using AutoMapper.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -21,6 +17,8 @@ namespace AlbaVulpes.API.Services
     {
         private readonly AppSettings _appSettings;
 
+        private AppSecrets _appSecrets;
+
         public SecretsManagerService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -28,6 +26,9 @@ namespace AlbaVulpes.API.Services
 
         public AppSecrets Get()
         {
+            if (_appSecrets != null)
+                return _appSecrets;
+
             var client = new AmazonSecretsManagerClient(new AmazonSecretsManagerConfig
             {
                 RegionEndpoint = RegionEndpoint.USEast1
@@ -42,7 +43,9 @@ namespace AlbaVulpes.API.Services
 
             var secretString = response?.SecretString;
 
-            return JsonConvert.DeserializeObject<AppSecrets>(secretString);
+            _appSecrets = JsonConvert.DeserializeObject<AppSecrets>(secretString);
+
+            return _appSecrets;
         }
     }
 }
