@@ -49,11 +49,6 @@ namespace AlbaVulpes.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseCors(builder => builder
@@ -66,6 +61,15 @@ namespace AlbaVulpes.API
             app.UseAuthentication();
 
             app.UseMvc();
+
+            app.UseCustomLogging();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+
+                app.UseSeqLogging();
+            }
         }
     }
 }
