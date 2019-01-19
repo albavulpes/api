@@ -34,8 +34,6 @@ Task("Deploy")
     });
 	
 Task("Default")
-    .IsDependentOn("StopWebsite")
-    .IsDependentOn("Deploy")
-    .IsDependentOn("StartWebsite");
+    .IsDependentOn("Deploy");
 	
 RunTarget(target);
