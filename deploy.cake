@@ -25,6 +25,7 @@ Task("Deploy")
         DeployWebsite(new DeploySettings()
         {
             SourcePath = "./release/release.zip",
+			UseAppOffline = true,
 
             SiteName = site,
             ComputerName = machine,
