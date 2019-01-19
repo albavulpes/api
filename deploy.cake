@@ -1,5 +1,4 @@
 #addin Cake.WebDeploy
-#addin Cake.IIS
 
 var target = Argument("target", "Default");
 
@@ -20,26 +19,14 @@ if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) 
 	return;
 }
 
-Task("StartWebsite")
-    .Does(() =>
-	{
-		StartSite(site);
-	});
-
-Task("StopWebsite")
-    .Does(() =>
-	{
-		StopSite(site);
-	});
-
 Task("Deploy")
     .Does(() =>
     {
         DeployWebsite(new DeploySettings()
         {
             SourcePath = "./release/release.zip",
-            SiteName = "stage-api",
 
+            SiteName = site,
             ComputerName = machine,
             Username = username,
             Password = password
