@@ -71,10 +71,7 @@ namespace AlbaVulpes.API
                 app.UseSeqLogging();
             }
 
-            if (!env.IsProduction())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseDeveloperExceptionPage();
         }
     }
 }
