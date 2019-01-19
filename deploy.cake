@@ -3,6 +3,7 @@
 var target = Argument("target", "Default");
 
 var machine = EnvironmentVariable("PUBLISH_MACHINE");
+var site = EnvironmentVariable("PUBLISH_SITE");
 var username = EnvironmentVariable("PUBLISH_CREDENTIALS_USR");
 var password = EnvironmentVariable("PUBLISH_CREDENTIALS_PSW");
 
@@ -17,6 +18,18 @@ if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) 
 	
 	return;
 }
+
+Task("StartWebsite")
+    .Does(() =>
+	{
+		StartSite(site);
+	});
+
+Task("StopWebsite")
+    .Does(() =>
+	{
+		StopSite(site);
+	});
 
 Task("Deploy")
     .Does(() =>
@@ -33,6 +46,8 @@ Task("Deploy")
     });
 	
 Task("Default")
-    .IsDependentOn("Deploy");
+    .IsDependentOn("StopWebsite")
+    .IsDependentOn("Deploy")
+    .IsDependentOn("StartWebsite");
 	
 RunTarget(target);

@@ -36,7 +36,10 @@ namespace AlbaVulpes.API.Extensions
 
         public static void UseFileLogging(this IApplicationBuilder builder)
         {
-            var fileTarget = new FileTarget($"logs/{DateTime.Now.ToString("yyyy-MM-dd")}");
+            var fileTarget = new FileTarget
+            {
+                FileName = $"logs/{DateTime.Now.ToString("yyyy-MM-dd")}.log"
+            };
 
             UpdateLoggingConfiguration(config =>
             {

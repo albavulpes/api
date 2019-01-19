@@ -12,8 +12,9 @@ pipeline {
 				branch 'develop'
 			}
 			environment {
-				PUBLISH_CREDENTIALS = credentials('DevPublishCredentials')
+				PUBLISH_SITE = credentials('Stage_SiteName')
 				PUBLISH_MACHINE = credentials('DevPublishMachine')
+				PUBLISH_CREDENTIALS = credentials('DevPublishCredentials')
 			}
 			steps {
 				powershell './build.ps1 -Script deploy.cake'
