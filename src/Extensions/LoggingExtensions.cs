@@ -42,8 +42,7 @@ namespace AlbaVulpes.API.Extensions
             var seqTarget = new SeqTarget
             {
                 ServerUrl = appSettings.Seq.ServerUrl,
-                ApiKey = appSecrets.Seq_ApiKey,
-
+                ApiKey = appSecrets.Seq_ApiKey
             };
 
             // Ensures that writes to Seq do not block the application

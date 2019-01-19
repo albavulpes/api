@@ -1,11 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
-using Amazon;
-using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -37,27 +34,33 @@ namespace AlbaVulpes.API.Services
 
             var awsOptions = _config.GetAWSOptions();
 
-            var isCredentialsResolved = new CredentialProfileStoreChain().TryGetAWSCredentials(awsOptions.Profile, out var awsCredentials);
+            AmazonSecretsManagerClient client;
 
-            if (!isCredentialsResolved)
+            var isCredentialsResolved = new CredentialProfileStoreChain().TryGetAWSCredentials(awsOptions.Profile, out var awsCredentials);
+            if (isCredentialsResolved)
             {
-                throw new AmazonSecretsManagerException("Failed to resolve credentials.");
+                client = new AmazonSecretsManagerClient(awsCredentials, awsOptions.Region);
+            }
+            else
+            {
+                client = new AmazonSecretsManagerClient();
             }
 
-            var client = new AmazonSecretsManagerClient(awsCredentials, awsOptions.Region);
-
-            var request = new GetSecretValueRequest
+            using (client)
             {
-                SecretId = _appSettings.AppSecretsId
-            };
+                var request = new GetSecretValueRequest
+                {
+                    SecretId = _appSettings.AppSecretsId
+                };
 
-            var response = Task.Run(async () => await client.GetSecretValueAsync(request)).Result;
+                var response = Task.Run(async () => await client.GetSecretValueAsync(request)).Result;
 
-            var secretString = response?.SecretString;
+                var secretString = response?.SecretString;
 
-            _appSecrets = JsonConvert.DeserializeObject<AppSecrets>(secretString);
+                _appSecrets = JsonConvert.DeserializeObject<AppSecrets>(secretString);
 
-            return _appSecrets;
+                return _appSecrets;
+            }
         }
     }
 }
