@@ -24,14 +24,26 @@ namespace AlbaVulpes.API.Extensions
 
         public static void UseConsoleLogging(this IApplicationBuilder builder)
         {
-            var logconsole = new ConsoleTarget();
+            var consoleTarget = new ConsoleTarget();
 
             UpdateLoggingConfiguration(config =>
             {
-                config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);
+                config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget);
             });
 
             NLog.LogManager.GetCurrentClassLogger().Info("Console logging initialized.");
+        }
+
+        public static void UseFileLogging(this IApplicationBuilder builder)
+        {
+            var fileTarget = new FileTarget($"logs/{DateTime.Now.ToString("yyyy-MM-dd")}");
+
+            UpdateLoggingConfiguration(config =>
+            {
+                config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, fileTarget);
+            });
+
+            NLog.LogManager.GetCurrentClassLogger().Info("File logging initialized.");
         }
 
         public static void UseSeqLogging(this IApplicationBuilder builder)

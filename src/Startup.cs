@@ -69,6 +69,7 @@ namespace AlbaVulpes.API
             {
                 app.UseDeveloperExceptionPage();
 
+                app.UseFileLogging();
                 app.UseSeqLogging();
             }
         }
