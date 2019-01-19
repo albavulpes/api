@@ -1,4 +1,5 @@
-#addin nuget:?package=Cake.WebDeploy&version=0.3.3
+#addin Cake.WebDeploy
+#addin Cake.IIS
 
 var target = Argument("target", "Default");
 
