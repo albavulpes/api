@@ -67,10 +67,13 @@ namespace AlbaVulpes.API
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
                 app.UseFileLogging();
                 app.UseSeqLogging();
+            }
+
+            if (!env.IsProduction())
+            {
+                app.UseDeveloperExceptionPage();
             }
         }
     }
