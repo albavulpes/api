@@ -65,7 +65,7 @@ namespace AlbaVulpes.API
 
             app.UseConsoleLogging();
 
-            if (env.IsDevelopment())
+            if (!env.IsDevelopment())
             {
                 app.UseFileLogging();
                 app.UseSeqLogging();
