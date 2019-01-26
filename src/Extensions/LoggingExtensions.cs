@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Config;
 using AlbaVulpes.API.Services;
+using AlbaVulpes.API.Services.AWS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -51,8 +53,12 @@ namespace AlbaVulpes.API.Extensions
 
         public static void UseSeqLogging(this IApplicationBuilder builder)
         {
-            var appSettings = builder.ApplicationServices.GetService<IOptions<AppSettings>>().Value;
-            var appSecrets = builder.ApplicationServices.CreateScope().ServiceProvider.GetService<ISecretsManagerService>().Get();
+            var appServices = builder.ApplicationServices;
+
+            var appSettings = appServices.GetService<IOptions<AppSettings>>().Value;
+            var secretsManagerService = appServices.CreateScope().ServiceProvider.GetService<ISecretsManagerService>();
+
+            var appSecrets = Task.Run(async () => await secretsManagerService.Get()).Result;
 
             var seqTarget = new SeqTarget
             {

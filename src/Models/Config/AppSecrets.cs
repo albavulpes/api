@@ -9,5 +9,7 @@
         public string Database_Password { get; set; }
 
         public string Seq_ApiKey { get; set; }
+
+        public string AWS_S3BucketName { get; set; }
     }
 }

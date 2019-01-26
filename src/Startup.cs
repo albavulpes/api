@@ -30,10 +30,9 @@ namespace AlbaVulpes.API
             services.AddCors();
 
             services.AddAutoMapper();
-            services.AddSecretsManager();
 
-            services.AddMarten();
-            services.AddUnitOfWork();
+            services.AddDatabaseServices();
+            services.AddAmazonServices();
 
             services.AddValidator();
 
@@ -50,6 +49,19 @@ namespace AlbaVulpes.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper)
         {
+            app.UseConsoleLogging();
+
+            if (!env.IsDevelopment())
+            {
+                app.UseFileLogging();
+                app.UseSeqLogging();
+            }
+
+            if (!env.IsProduction())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseCors(builder => builder
@@ -62,16 +74,6 @@ namespace AlbaVulpes.API
             app.UseAuthentication();
 
             app.UseMvc();
-
-            app.UseConsoleLogging();
-
-            if (!env.IsDevelopment())
-            {
-                app.UseFileLogging();
-                app.UseSeqLogging();
-            }
-
-            app.UseDeveloperExceptionPage();
         }
     }
 }
