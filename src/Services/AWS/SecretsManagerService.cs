@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace AlbaVulpes.API.Services
+namespace AlbaVulpes.API.Services.AWS
 {
     public interface ISecretsManagerService
     {
