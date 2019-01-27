@@ -45,10 +45,9 @@ namespace AlbaVulpes.API.Modules.Images
                 var newWidth = (int)(image.Width * factor);
                 var newHeight = (int)(image.Height * factor);
 
-                image
-                    .Mutate(c =>
-                        c.Resize(newWidth, newHeight, new Lanczos3Resampler())
-                    );
+                image.Mutate(c =>
+                    c.Resize(newWidth, newHeight, new Lanczos3Resampler())
+                );
 
                 image.Save(outStream, new JpegEncoder
                 {

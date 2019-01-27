@@ -27,7 +27,7 @@ namespace AlbaVulpes.API.Controllers
 
         [Authorize(Roles = "Creator")]
         [HttpPost]
-        public async Task<IActionResult> Create(IFormFile file, bool createThumbnail = false)
+        public async Task<IActionResult> Create(IFormFile file)
         {
             if (file == null)
             {
@@ -42,9 +42,6 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest($"Content Type {contentType} not supported");
             }
 
-            string originalImageUrl = null;
-            string thumbnailImageUrl = null;
-
             using (var imageFileStream = new MemoryStream())
             {
                 await file.CopyToAsync(imageFileStream);
@@ -53,26 +50,14 @@ namespace AlbaVulpes.API.Controllers
                 {
                     var fileKey = $"{S3StorageOptions.ImageUploadsKeyPrefix}/image-{Guid.NewGuid()}.jpg";
 
-                    originalImageUrl = await _s3UploadService.UploadFileAsync(fileKey, processedImageStream);
+                    var originalImageUrl = await _s3UploadService.UploadFileAsync(fileKey, processedImageStream);
 
-                    if (createThumbnail)
+                    return Ok(new ImageResponse
                     {
-                        using (var thumbnailImageStream = ImageProcessor.CreateThumbnail(processedImageStream, contentType))
-                        {
-                            var keyWithoutExt = Path.GetFileNameWithoutExtension(fileKey);
-                            var thumbnailFileKey = fileKey.Replace(keyWithoutExt, keyWithoutExt + "-thumbnail");
-
-                            thumbnailImageUrl = await _s3UploadService.UploadFileAsync(thumbnailFileKey, thumbnailImageStream);
-                        }
-                    }
+                        ImagePath = originalImageUrl
+                    });
                 }
             }
-
-            return Ok(new ImageResponse
-            {
-                ImagePath = originalImageUrl,
-                ThumbnailPath = thumbnailImageUrl
-            });
         }
     }
 }
