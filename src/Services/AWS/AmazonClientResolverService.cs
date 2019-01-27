@@ -12,7 +12,7 @@ namespace AlbaVulpes.API.Services.AWS
         TClientService GetClient<TClientService>() where TClientService : AmazonServiceClient;
     }
 
-    public class AmazonClientResolverService
+    public class AmazonClientResolverService : IAmazonClientResolverService
     {
         private readonly IConfiguration _config;
 
