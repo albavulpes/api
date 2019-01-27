@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Constants;
+using AlbaVulpes.API.Models.Responses;
 using AlbaVulpes.API.Modules.Images;
 using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Services.AWS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace AlbaVulpes.API.Controllers
 {
@@ -68,10 +68,11 @@ namespace AlbaVulpes.API.Controllers
                 }
             }
 
-            return Ok((
-                MainImage: originalImageUrl,
-                ThumbnailImage: thumbnailImageUrl
-            ));
+            return Ok(new ImageResponse
+            {
+                ImagePath = originalImageUrl,
+                ThumbnailPath = thumbnailImageUrl
+            });
         }
     }
 }
