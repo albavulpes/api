@@ -77,7 +77,7 @@ namespace AlbaVulpes.API.Extensions
 
             UpdateLoggingConfiguration(config =>
             {
-                config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, bufferingWrapper);
+                config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, bufferingWrapper);
             });
 
             NLog.LogManager.GetCurrentClassLogger().Info("Seq logging initialized.");
