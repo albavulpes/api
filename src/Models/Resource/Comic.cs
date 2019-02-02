@@ -4,7 +4,7 @@ using AlbaVulpes.API.Models.Shared;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class Comic : MediaContent
+    public class Comic : MediaContentCollection
     {
         public DateTime CreatedDate { get; set; }
         public DateTime ReleaseDate { get; set; }

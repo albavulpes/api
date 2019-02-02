@@ -1,18 +1,17 @@
 ﻿using System.IO;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AlbaVulpes.API.Services.AWS;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Configuration;
 
-namespace AlbaVulpes.API.Services.AWS
+namespace AlbaVulpes.API.Services.Content
 {
     public interface IFilesService
     {
         Task<Stream> GetFileAsync(string fullSizeImagePath);
         Task<string> UploadFileAsync(string key, Stream fileStream);
-        Task DeleteFileAsync(string key);
+        Task<string> DeleteFileAsync(string key);
     }
 
     public class FilesService : IFilesService
@@ -54,7 +53,7 @@ namespace AlbaVulpes.API.Services.AWS
             }
         }
 
-        public async Task DeleteFileAsync(string key)
+        public async Task<string> DeleteFileAsync(string key)
         {
             var appSecrets = await _secretsManager.Get();
             var bucketName = appSecrets.AWS_S3BucketName;
@@ -66,6 +65,8 @@ namespace AlbaVulpes.API.Services.AWS
                     BucketName = bucketName,
                     Key = key
                 });
+
+                return key;
             }
         }
     }

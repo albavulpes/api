@@ -1,4 +1,5 @@
 ﻿using AlbaVulpes.API.Services.AWS;
+using AlbaVulpes.API.Services.Content;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AlbaVulpes.API.Extensions

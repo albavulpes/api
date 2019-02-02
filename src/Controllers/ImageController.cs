@@ -8,6 +8,7 @@ using AlbaVulpes.API.Models.Responses;
 using AlbaVulpes.API.Modules.Images;
 using AlbaVulpes.API.Services;
 using AlbaVulpes.API.Services.AWS;
+using AlbaVulpes.API.Services.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

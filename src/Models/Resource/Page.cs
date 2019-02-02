@@ -5,13 +5,11 @@ using Marten.Schema;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class Page : ApiModel
+    public class Page : MediaContent
     {
         [ForeignKey(typeof(Chapter))]
         public Guid ChapterId { get; set; }
 
         public int PageNumber { get; set; }
-
-        public Image Image { get; set; }
     }
 }
