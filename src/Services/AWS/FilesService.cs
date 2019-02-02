@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -6,21 +8,32 @@ using Microsoft.Extensions.Configuration;
 
 namespace AlbaVulpes.API.Services.AWS
 {
-    public interface IS3UploadService
+    public interface IFilesService
     {
+        Task<Stream> GetFileAsync(string fullSizeImagePath);
         Task<string> UploadFileAsync(string key, Stream fileStream);
         Task DeleteFileAsync(string key);
     }
 
-    public class S3UploadService : IS3UploadService
+    public class FilesService : IFilesService
     {
         private readonly ISecretsManagerService _secretsManager;
         private readonly IAmazonClientResolverService _clientResolver;
 
-        public S3UploadService(ISecretsManagerService secretsManager, IAmazonClientResolverService clientResolver)
+        public FilesService(ISecretsManagerService secretsManager, IAmazonClientResolverService clientResolver)
         {
             _secretsManager = secretsManager;
             _clientResolver = clientResolver;
+        }
+
+        public async Task<Stream> GetFileAsync(string filePath)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var fileStream = await httpClient.GetStreamAsync(filePath);
+
+                return fileStream;
+            }
         }
 
         public async Task<string> UploadFileAsync(string key, Stream fileStream)

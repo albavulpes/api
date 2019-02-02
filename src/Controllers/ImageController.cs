@@ -18,11 +18,11 @@ namespace AlbaVulpes.API.Controllers
     [Produces("application/json")]
     public class ImageController : ApiController
     {
-        private readonly IS3UploadService _s3UploadService;
+        private readonly IFilesService _filesService;
 
-        public ImageController(IUnitOfWork unitOfWork, IValidatorService validator, IS3UploadService s3UploadService) : base(unitOfWork, validator)
+        public ImageController(IUnitOfWork unitOfWork, IValidatorService validator, IFilesService filesService) : base(unitOfWork, validator)
         {
-            _s3UploadService = s3UploadService;
+            _filesService = filesService;
         }
 
         [Authorize(Roles = "Creator")]
@@ -50,7 +50,7 @@ namespace AlbaVulpes.API.Controllers
                 {
                     var fileKey = $"{S3StorageOptions.ImageUploadsKeyPrefix}/image-{Guid.NewGuid()}.jpg";
 
-                    var originalImageUrl = await _s3UploadService.UploadFileAsync(fileKey, processedImageStream);
+                    var originalImageUrl = await _filesService.UploadFileAsync(fileKey, processedImageStream);
 
                     return Ok(new ImageResponse
                     {

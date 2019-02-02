@@ -5,13 +5,11 @@ using Marten.Schema;
 
 namespace AlbaVulpes.API.Models.Resource
 {
-    public class Arc : ApiModel
+    public class Arc : MediaContent
     {
         [ForeignKey(typeof(Comic))]
         public Guid ComicId { get; set; }
 
-        public string Title { get; set; }
-        public int Number { get; set; }
-        public Image CoverImage { get; set; }
+        public int ArcNumber { get; set; }
     }
 }

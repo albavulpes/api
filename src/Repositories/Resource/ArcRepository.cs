@@ -62,7 +62,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
                 var arcsCountInComic = await session.Query<Arc>().CountAsync(a => a.ComicId == comicId);
 
-                arc.Number = arcsCountInComic + 1;
+                arc.ArcNumber = arcsCountInComic + 1;
 
                 return await base.Create(arc);
             }

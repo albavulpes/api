@@ -10,7 +10,7 @@ namespace AlbaVulpes.API.Extensions
             services.AddScoped<IAmazonClientResolverService, AmazonClientResolverService>();
 
             services.AddScoped<ISecretsManagerService, SecretsManagerService>();
-            services.AddScoped<IS3UploadService, S3UploadService>();
+            services.AddScoped<IFilesService, FilesService>();
         }
     }
 }
