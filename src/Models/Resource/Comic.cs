@@ -6,7 +6,5 @@ namespace AlbaVulpes.API.Models.Resource
 {
     public class Comic : MediaContentCollection
     {
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ReleaseDate { get; set; }
     }
 }
