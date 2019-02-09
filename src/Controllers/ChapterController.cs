@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
@@ -6,6 +7,7 @@ using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
+using AlbaVulpes.API.Validators;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AlbaVulpes.API.Controllers
@@ -19,15 +21,10 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllForArc(Guid arcId)
+        public async Task<IActionResult> GetAllForComic(Guid comicId)
         {
-            var chapters = await UnitOfWork.GetRepository<ChapterRepository>().GetAllChaptersForArc(arcId);
-
-            if (chapters == null)
-            {
-                return NotFound();
-            }
-
+            var chapters = await UnitOfWork.GetRepository<ChapterRepository>().GetAllChaptersForComic(comicId);
+            
             return Ok(chapters);
         }
 
@@ -48,10 +45,11 @@ namespace AlbaVulpes.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Chapter chapter)
         {
+            var validation = await ValidatorService.GetValidator<ChapterValidator>().ValidateAsync(chapter);
 
-            if (chapter == null)
+            if (!validation.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var savedChapter = await UnitOfWork.GetRepository<ChapterRepository>().Create(chapter);
@@ -68,9 +66,11 @@ namespace AlbaVulpes.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Chapter chapter)
         {
-            if (chapter == null)
+            var validation = await ValidatorService.GetValidator<ChapterValidator>().ValidateAsync(chapter);
+
+            if (!validation.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var updatedChapter = await UnitOfWork.GetRepository<ChapterRepository>().Update(id, chapter);

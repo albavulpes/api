@@ -3,12 +3,14 @@ using FluentValidation;
 
 namespace AlbaVulpes.API.Validators
 {
-    public class ComicValidator : AbstractValidator<Comic>
+    public class ChapterValidator : AbstractValidator<Chapter>
     {
-        public ComicValidator()
+        public ChapterValidator()
         {
             RuleFor(x => x.Title).NotEmpty();
             RuleFor(x => x.Author).NotEmpty();
+
+            RuleFor(x => x.ComicId).NotEmpty();
         }
     }
 }

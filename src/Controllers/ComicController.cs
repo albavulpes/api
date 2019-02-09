@@ -49,8 +49,7 @@ namespace AlbaVulpes.API.Controllers
 
             if (!validation.IsValid)
             {
-                var error = validation.Errors.FirstOrDefault();
-                return BadRequest(error?.ErrorMessage);
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var savedComic = await UnitOfWork.GetRepository<ComicRepository>().Create(comic);
@@ -62,9 +61,11 @@ namespace AlbaVulpes.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Comic comic)
         {
-            if (comic == null)
+            var validation = await ValidatorService.GetValidator<ComicValidator>().ValidateAsync(comic);
+
+            if (!validation.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var updatedComic = await UnitOfWork.GetRepository<ComicRepository>().Update(id, comic);
