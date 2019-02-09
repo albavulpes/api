@@ -7,8 +7,11 @@ namespace AlbaVulpes.API.Models.Resource
 {
     public class Chapter : MediaContentCollection
     {
+        [ForeignKey(typeof(Comic))]
+        public Guid ComicId { get; set; }
+
         [ForeignKey(typeof(Arc))]
-        public Guid ArcId { get; set; }
+        public Guid? ArcId { get; set; }
 
         public int ChapterNumber { get; set; }
     }
