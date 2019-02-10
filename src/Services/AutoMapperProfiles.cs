@@ -9,7 +9,7 @@ namespace AlbaVulpes.API.Services
         public AutomapperProfile()
         {
             CreateMap<Comic, ComicResponse>()
-                .ForMember(x => x.ArcsCount, c => c.Ignore());
+                .ForMember(x => x.ChaptersCount, c => c.Ignore());
 
             CreateMap<Arc, ArcResponse>()
                 .ForMember(x => x.ChaptersCount, c => c.Ignore());

@@ -4,6 +4,6 @@ namespace AlbaVulpes.API.Models.Responses
 {
     public class ComicResponse : Comic
     {
-        public int ArcsCount { get; set; }
+        public int ChaptersCount { get; set; }
     }
 }

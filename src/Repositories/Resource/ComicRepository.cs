@@ -32,7 +32,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
                 foreach (var comicViewModel in results)
                 {
-                    comicViewModel.ArcsCount = await session.Query<Arc>().CountAsync(arc => arc.ComicId == comicViewModel.Id);
+                    comicViewModel.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ComicId == comicViewModel.Id);
                 }
 
                 return results;
@@ -47,7 +47,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
                 var result = _mapper.Map<ComicResponse>(data);
 
-                result.ArcsCount = await session.Query<Arc>().CountAsync(arc => arc.ComicId == data.Id);
+                result.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ComicId == data.Id);
 
                 return result;
             }
