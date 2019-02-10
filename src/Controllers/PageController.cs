@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
@@ -6,6 +8,7 @@ using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
+using AlbaVulpes.API.Validators;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AlbaVulpes.API.Controllers
@@ -51,6 +54,13 @@ namespace AlbaVulpes.API.Controllers
             if (page == null)
             {
                 return BadRequest();
+            }
+
+            var validation = await ValidatorService.GetValidator<PageValidator>().ValidateAsync(page);
+
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var savedPage = await UnitOfWork.GetRepository<PageRepository>().Create(page);

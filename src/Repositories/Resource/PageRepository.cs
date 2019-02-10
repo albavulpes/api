@@ -8,7 +8,7 @@ using Marten;
 
 namespace AlbaVulpes.API.Repositories.Resource
 {
-    public class PageRepository : RestRepository<Page>
+    public class PageRepository : ApiRepository
     {
         public PageRepository(IDocumentStore documentStore) : base(documentStore)
         {
@@ -16,23 +16,38 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public async Task<IReadOnlyList<Page>> GetAllPagesForChapter(Guid chapterId)
         {
-            if(chapterId == Guid.Empty)
+            if (chapterId == Guid.Empty)
             {
                 return null;
             }
+
             using (var session = _store.QuerySession())
             {
                 var pages = await session.Query<Page>()
                     .Where(page => page.ChapterId == chapterId)
                     .ToListAsync();
 
-                return pages.ToList();
+                var sortedPages = pages
+                    .OrderBy(page => page.PageNumber)
+                    .ToList();
+
+                return sortedPages;
             }
         }
 
-        public override async Task<Page> Create(Page page)
+        public async Task<Page> Get(Guid id)
         {
-            var chapterId = page.ChapterId;
+            using (var session = _store.QuerySession())
+            {
+                var data = await session.LoadAsync<Page>(id);
+
+                return data;
+            }
+        }
+
+        public async Task<Page> Create(Page data)
+        {
+            var chapterId = data.ChapterId;
 
             if (chapterId == Guid.Empty)
             {
@@ -48,9 +63,58 @@ namespace AlbaVulpes.API.Repositories.Resource
 
                 var pagesCountInChapter = await session.Query<Page>().CountAsync(p => p.ChapterId == chapterId);
 
-                page.PageNumber = pagesCountInChapter + 1;
+                data.PageNumber = pagesCountInChapter + 1;
+            }
 
-                return await base.Create(page);
+            using (var session = _store.OpenSession())
+            {
+                session.Insert(data);
+                await session.SaveChangesAsync();
+
+                return data;
+            }
+        }
+
+        public async Task<Page> Update(Guid id, Page data)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var dbData = await session.LoadAsync<Page>(id);
+
+                if (dbData == null)
+                {
+                    return null;
+                }
+
+                data.Id = dbData.Id;
+                data.ChapterId = dbData.ChapterId;
+                data.CreatedDate = dbData.CreatedDate;
+            }
+
+            using (var session = _store.OpenSession())
+            {
+                session.Update(data);
+                await session.SaveChangesAsync();
+
+                return data;
+            }
+        }
+
+        public virtual async Task<Page> Delete(Guid id)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var data = await session.LoadAsync<Page>(id);
+
+                if (data == null)
+                {
+                    return null;
+                }
+
+                session.Delete<Page>(id);
+                await session.SaveChangesAsync();
+
+                return data;
             }
         }
     }
