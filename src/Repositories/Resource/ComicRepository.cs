@@ -45,6 +45,11 @@ namespace AlbaVulpes.API.Repositories.Resource
             {
                 var data = await session.LoadAsync<Comic>(id);
 
+                if (data == null)
+                {
+                    return null;
+                }
+
                 var result = _mapper.Map<ComicResponse>(data);
 
                 result.ChaptersCount = await session.Query<Chapter>().CountAsync(chapter => chapter.ComicId == data.Id);
@@ -55,7 +60,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public virtual async Task<Comic> Create(Comic data)
         {
-            data.CreatedDate = DateTime.Now;
+            data.CreatedDate = DateTime.UtcNow;
 
             using (var session = _store.OpenSession())
             {
@@ -68,7 +73,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public async Task<Comic> Update(Guid id, Comic data)
         {
-            using (var session = _store.QuerySession())
+            using (var session = _store.OpenSession())
             {
                 var dbData = await session.LoadAsync<Comic>(id);
 
@@ -76,13 +81,10 @@ namespace AlbaVulpes.API.Repositories.Resource
                 {
                     return null;
                 }
-                
+
                 data.Id = dbData.Id;
                 data.CreatedDate = dbData.CreatedDate;
-            }
 
-            using (var session = _store.OpenSession())
-            {
                 session.Update(data);
                 await session.SaveChangesAsync();
 
@@ -105,6 +107,45 @@ namespace AlbaVulpes.API.Repositories.Resource
                 await session.SaveChangesAsync();
 
                 return data;
+            }
+        }
+
+        public virtual async Task<Comic> Publish(Guid id, bool state)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var comicToPublish = await session.LoadAsync<Comic>(id);
+
+                if (comicToPublish == null)
+                {
+                    return null;
+                }
+
+                // If comic is already published
+                if (comicToPublish.PublishDate != null && comicToPublish.PublishDate < DateTime.UtcNow)
+                {
+                    if (state)
+                    {
+                        throw new Exception("Comic has already been published");
+                    }
+
+                    comicToPublish.PublishDate = null;
+                }
+                else
+                {
+                    if (!state)
+                    {
+                        throw new Exception("Comic is not published yet");
+                    }
+
+                    comicToPublish.PublishDate = DateTime.UtcNow;
+                }
+
+
+                session.Update(comicToPublish);
+                await session.SaveChangesAsync();
+
+                return comicToPublish;
             }
         }
     }

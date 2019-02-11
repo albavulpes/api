@@ -40,7 +40,7 @@ namespace AlbaVulpes.API.Extensions
         {
             var fileTarget = new FileTarget
             {
-                FileName = $"logs/{DateTime.Now.ToString("yyyy-MM-dd")}.log"
+                FileName = $"logs/{DateTime.UtcNow.ToString("yyyy-MM-dd")}.log"
             };
 
             UpdateLoggingConfiguration(config =>

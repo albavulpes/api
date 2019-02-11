@@ -91,5 +91,26 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok(comicToDelete);
         }
+
+        [Authorize(Roles = "Creator")]
+        [HttpPut("{id}/publish")]
+        public async Task<IActionResult> Publish(Guid id, bool state = true)
+        {
+            try
+            {
+                var comicToPublish = await UnitOfWork.GetRepository<ComicRepository>().Publish(id, state);
+
+                if (comicToPublish == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(comicToPublish);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
