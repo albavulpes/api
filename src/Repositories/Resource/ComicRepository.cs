@@ -73,7 +73,7 @@ namespace AlbaVulpes.API.Repositories.Resource
 
         public async Task<Comic> Update(Guid id, Comic data)
         {
-            using (var session = _store.OpenSession())
+            using (var session = _store.QuerySession())
             {
                 var dbData = await session.LoadAsync<Comic>(id);
 
@@ -84,7 +84,10 @@ namespace AlbaVulpes.API.Repositories.Resource
 
                 data.Id = dbData.Id;
                 data.CreatedDate = dbData.CreatedDate;
+            }
 
+            using (var session = _store.OpenSession())
+            {
                 session.Update(data);
                 await session.SaveChangesAsync();
 
