@@ -11,4 +11,12 @@ namespace AlbaVulpes.API.Validators
             RuleFor(x => x.Password).NotEmpty();
         }
     }
+
+    public class GoogleLoginRequestValidator : AbstractValidator<GoogleLoginRequest>
+    {
+        public GoogleLoginRequestValidator()
+        {
+            RuleFor(x => x.AccessToken).NotEmpty();
+        }
+    }
 }

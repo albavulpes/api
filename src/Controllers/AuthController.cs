@@ -95,5 +95,29 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok();
         }
+
+
+        [HttpPost("google")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request)
+        {
+            var validation = ValidatorService.GetValidator<GoogleLoginRequestValidator>().Validate(request);
+
+            if (!validation.IsValid)
+            {
+                var error = validation.Errors.FirstOrDefault();
+                return BadRequest(error?.ErrorMessage);
+            }
+
+            var claimsPrincipal = await UnitOfWork.GetRepository<AuthRepository>().AuthenticateGoogleUser(request);
+
+            if (claimsPrincipal == null)
+            {
+                return BadRequest();
+            }
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+            return Ok();
+        }
     }
 }

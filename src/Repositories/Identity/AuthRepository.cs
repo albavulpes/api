@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Models.Identity;
 using AlbaVulpes.API.Models.Requests;
+using AlbaVulpes.API.Services.AWS;
+using Google.Apis.Oauth2.v2;
+using Google.Apis.Services;
 using Marten;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -12,8 +15,11 @@ namespace AlbaVulpes.API.Repositories.Identity
 {
     public class AuthRepository : ApiRepository
     {
-        public AuthRepository(IDocumentStore documentStore) : base(documentStore)
+        private readonly ISecretsManagerService _secretsManager;
+
+        public AuthRepository(IDocumentStore documentStore, ISecretsManagerService secretsManager) : base(documentStore)
         {
+            _secretsManager = secretsManager;
         }
 
         public async Task<ClaimsPrincipal> AuthenticateUser(LoginRequest loginRequest)
@@ -39,6 +45,50 @@ namespace AlbaVulpes.API.Repositories.Identity
                 }
 
                 // User is legit, create a new claim identity
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                var userRoleClaims = user.Roles.Select(role => new Claim(ClaimTypes.Role, role.ToString())).ToList();
+                claims.AddRange(userRoleClaims);
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                return claimsPrincipal;
+            }
+        }
+
+        public async Task<ClaimsPrincipal> AuthenticateGoogleUser(GoogleLoginRequest loginRequest)
+        {
+            var service = new Oauth2Service(new BaseClientService.Initializer());
+
+            var request = service.Tokeninfo();
+            request.AccessToken = loginRequest.AccessToken;
+
+            var info = request.Execute();
+
+            using (var session = _store.OpenSession())
+            {
+                var user = await session.Query<User>()
+                    .Where(u => u.Email == info.Email)
+                    .FirstOrDefaultAsync();
+
+                // User doesn't exist, create one
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Email = info.Email,
+                        UserName = info.Email.Replace("@gmail.com", ""),
+                        Roles = new List<Role> { Role.Member }
+                    };
+
+                    session.Insert(user);
+                    await session.SaveChangesAsync();
+                }
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, user.Email)

@@ -12,17 +12,15 @@ namespace AlbaVulpes.API.Extensions
     {
         public static void AddCookieAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            // configure strongly typed settings objects
             var appSettings = config.GetSection("AppSettings").Get<AppSettings>();
             var cookieName = appSettings.AuthCookieName;
 
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.Cookie.Name = cookieName;
                     options.Cookie.SameSite = SameSiteMode.None;
-                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
                     options.SlidingExpiration = true;
                     options.Events = new CookieAuthenticationEvents
                     {

@@ -24,6 +24,14 @@ namespace AlbaVulpes.API
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAmazonServices();
+            
+            services.AddDatabaseServices();
+
+            services.AddCookieAuthentication(Configuration);
+
+            services.AddAutoMapper();
+            services.AddValidator();
 
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -33,22 +41,6 @@ namespace AlbaVulpes.API
                 });
 
             services.AddCors();
-
-            services.AddAutoMapper();
-
-            services.AddDatabaseServices();
-            services.AddAmazonServices();
-
-            services.AddValidator();
-
-            services.AddCookieAuthentication(Configuration);
-
-            //services.AddAuthentication().AddGoogle(googleOptions =>
-            //{
-            //    var authSettings = Configuration.GetSection("AuthSettings").Get<AuthSettings>();
-            //    googleOptions.ClientId = authSettings.Google.ClientId;
-            //    googleOptions.ClientSecret = authSettings.Google.ClientSecret;
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
