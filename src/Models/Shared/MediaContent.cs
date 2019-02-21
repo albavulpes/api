@@ -16,5 +16,7 @@ namespace AlbaVulpes.API.Models.Shared
 
         public DateTime? CreatedDate { get; set; }
         public DateTime? PublishDate { get; set; }
+
+        public bool IsPublished => PublishDate < DateTime.UtcNow;
     }
 }
