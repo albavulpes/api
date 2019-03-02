@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Helpers;
 using AlbaVulpes.API.Models.Resource;
 using Marten;
 
@@ -100,7 +101,7 @@ namespace AlbaVulpes.API.Repositories.Resource
             }
         }
 
-        public virtual async Task<Page> Delete(Guid id)
+        public async Task<Page> Delete(Guid id)
         {
             using (var session = _store.OpenSession())
             {
@@ -115,6 +116,36 @@ namespace AlbaVulpes.API.Repositories.Resource
                 await session.SaveChangesAsync();
 
                 return data;
+            }
+        }
+
+        public async Task<Page> Reorder(Guid id, int index)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var pageToReorder = await session.LoadAsync<Page>(id);
+
+                if (pageToReorder == null)
+                {
+                    return null;
+                }
+
+                var allPagesForChapter = await session.Query<Page>()
+                    .Where(p => p.ChapterId == pageToReorder.ChapterId)
+                    .OrderBy(p => p.PageNumber)
+                    .ToListAsync();
+
+                var pagesList = allPagesForChapter.ToList();
+
+                pagesList.Remove(pageToReorder);
+                pagesList.Insert(index, pageToReorder);
+
+                pagesList.Reorder(p => p.PageNumber);
+                
+                session.Update(pagesList.ToArray());
+                await session.SaveChangesAsync();
+
+                return pageToReorder;
             }
         }
     }

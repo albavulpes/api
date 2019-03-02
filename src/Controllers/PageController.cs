@@ -100,5 +100,26 @@ namespace AlbaVulpes.API.Controllers
 
             return Ok(pageToDelete);
         }
+
+        [Authorize(Roles = "Creator")]
+        [HttpPut("{id}/reorder/{index}")]
+        public async Task<IActionResult> Reorder(Guid id, int index)
+        {
+            try
+            {
+                var pageToReorder = await UnitOfWork.GetRepository<PageRepository>().Reorder(id, index);
+
+                if (pageToReorder == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(pageToReorder);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
