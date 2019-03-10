@@ -18,5 +18,10 @@ namespace AlbaVulpes.API.Models.Shared
         public DateTime? PublishDate { get; set; }
 
         public bool IsPublished => PublishDate < DateTime.UtcNow;
+
+        public MediaContent()
+        {
+            CoverImage = new Image();
+        }
     }
 }

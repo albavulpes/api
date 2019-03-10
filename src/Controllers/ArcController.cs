@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AlbaVulpes.API.Base;
@@ -6,6 +7,7 @@ using AlbaVulpes.API.Interfaces;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Repositories.Resource;
 using AlbaVulpes.API.Services;
+using AlbaVulpes.API.Validators;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AlbaVulpes.API.Controllers
@@ -48,9 +50,11 @@ namespace AlbaVulpes.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Arc arc)
         {
-            if (arc == null)
+            var validation = await ValidatorService.GetValidator<ArcValidator>().ValidateAsync(arc);
+
+            if (!validation.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validation.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
             var savedArc = await UnitOfWork.GetRepository<ArcRepository>().Create(arc);
