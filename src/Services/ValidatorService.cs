@@ -10,9 +10,16 @@ namespace AlbaVulpes.API.Services
 
     public class ValidatorService : IValidatorService
     {
+        private readonly IServiceProvider _serviceProvider;
+
+        public ValidatorService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
         public TValidator GetValidator<TValidator>() where TValidator : IValidator
         {
-            return (TValidator)Activator.CreateInstance(typeof(TValidator));
+            return (TValidator)_serviceProvider.GetService(typeof(TValidator));
         }
     }
 }
