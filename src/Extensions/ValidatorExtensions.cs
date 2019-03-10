@@ -18,6 +18,7 @@ namespace AlbaVulpes.API.Extensions
             services.AddScoped<ImageValidator>();
 
             services.AddScoped<LoginRequestValidator>();
+            services.AddScoped<GoogleLoginRequestValidator>();
             services.AddScoped<RegisterRequestValidator>();
         }
     }

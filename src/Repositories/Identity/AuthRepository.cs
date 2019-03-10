@@ -75,18 +75,10 @@ namespace AlbaVulpes.API.Repositories.Identity
                     .Where(u => u.Email == info.Email)
                     .FirstOrDefaultAsync();
 
-                // User doesn't exist, create one
+                // User doesn't exist, reject login
                 if (user == null)
                 {
-                    user = new User
-                    {
-                        Email = info.Email,
-                        UserName = info.Email.Replace("@gmail.com", ""),
-                        Roles = new List<Role> { Role.Member }
-                    };
-
-                    session.Insert(user);
-                    await session.SaveChangesAsync();
+                    return null;
                 }
 
                 var claims = new List<Claim>
