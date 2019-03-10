@@ -155,5 +155,44 @@ namespace AlbaVulpes.API.Repositories.Resource
                 return data;
             }
         }
+
+        public virtual async Task<Chapter> Publish(Guid id, bool state)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var chapterToPublish = await session.LoadAsync<Chapter>(id);
+
+                if (chapterToPublish == null)
+                {
+                    return null;
+                }
+
+                // If chapter is already published
+                if (chapterToPublish.PublishDate != null && chapterToPublish.PublishDate < DateTime.UtcNow)
+                {
+                    if (state)
+                    {
+                        throw new Exception("Chapter has already been published");
+                    }
+
+                    chapterToPublish.PublishDate = null;
+                }
+                else
+                {
+                    if (!state)
+                    {
+                        throw new Exception("Chapteris not published yet");
+                    }
+
+                    chapterToPublish.PublishDate = DateTime.UtcNow;
+                }
+
+
+                session.Update(chapterToPublish);
+                await session.SaveChangesAsync();
+
+                return chapterToPublish;
+            }
+        }
     }
 }

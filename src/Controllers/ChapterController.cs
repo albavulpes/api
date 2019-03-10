@@ -24,7 +24,7 @@ namespace AlbaVulpes.API.Controllers
         public async Task<IActionResult> GetAllForComic(Guid comicId)
         {
             var chapters = await UnitOfWork.GetRepository<ChapterRepository>().GetAllChaptersForComic(comicId);
-            
+
             return Ok(chapters);
         }
 
@@ -95,6 +95,27 @@ namespace AlbaVulpes.API.Controllers
             }
 
             return Ok(chapterToDelete);
+        }
+
+        [Authorize(Roles = "Creator")]
+        [HttpPut("{id}/publish")]
+        public async Task<IActionResult> Publish(Guid id, bool state = true)
+        {
+            try
+            {
+                var chapterToPublish = await UnitOfWork.GetRepository<ChapterRepository>().Publish(id, state);
+
+                if (chapterToPublish == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(chapterToPublish);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
