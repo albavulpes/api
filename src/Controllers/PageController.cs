@@ -102,6 +102,27 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [Authorize(Roles = "Creator")]
+        [HttpPut("{id}/publish")]
+        public async Task<IActionResult> Publish(Guid id, bool state = true)
+        {
+            try
+            {
+                var pageToPublish = await UnitOfWork.GetRepository<PageRepository>().Publish(id, state);
+
+                if (pageToPublish == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(pageToPublish);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Authorize(Roles = "Creator")]
         [HttpPut("{id}/reorder/{index}")]
         public async Task<IActionResult> Reorder(Guid id, int index)
         {

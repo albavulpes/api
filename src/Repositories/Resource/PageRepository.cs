@@ -119,6 +119,45 @@ namespace AlbaVulpes.API.Repositories.Resource
             }
         }
 
+        public virtual async Task<Page> Publish(Guid id, bool state)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var pageToPublish = await session.LoadAsync<Page>(id);
+
+                if (pageToPublish == null)
+                {
+                    return null;
+                }
+
+                // If chapter is already published
+                if (pageToPublish.PublishDate != null && pageToPublish.PublishDate < DateTime.UtcNow)
+                {
+                    if (state)
+                    {
+                        throw new Exception("Page has already been published");
+                    }
+
+                    pageToPublish.PublishDate = null;
+                }
+                else
+                {
+                    if (!state)
+                    {
+                        throw new Exception("Page is not published yet");
+                    }
+
+                    pageToPublish.PublishDate = DateTime.UtcNow;
+                }
+
+
+                session.Update(pageToPublish);
+                await session.SaveChangesAsync();
+
+                return pageToPublish;
+            }
+        }
+
         public async Task<Page> Reorder(Guid id, int index)
         {
             using (var session = _store.OpenSession())
@@ -141,7 +180,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 pagesList.Insert(index, pageToReorder);
 
                 pagesList.Reorder(p => p.PageNumber);
-                
+
                 session.Update(pagesList.ToArray());
                 await session.SaveChangesAsync();
 

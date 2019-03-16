@@ -117,6 +117,27 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [Authorize(Roles = "Creator")]
+        [HttpPut("{id}/reorder/{index}")]
+        public async Task<IActionResult> Reorder(Guid id, int index)
+        {
+            try
+            {
+                var chapterToReorder = await UnitOfWork.GetRepository<ChapterRepository>().Reorder(id, index);
+
+                if (chapterToReorder == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(chapterToReorder);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
 

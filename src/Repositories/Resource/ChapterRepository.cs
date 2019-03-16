@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Base;
+using AlbaVulpes.API.Helpers;
 using AlbaVulpes.API.Models.Resource;
 using AlbaVulpes.API.Models.Responses;
 using AutoMapper;
@@ -59,8 +60,11 @@ namespace AlbaVulpes.API.Repositories.Resource
                     .Select(group => new ChapterGroupResponse
                     {
                         Arc = group.Key,
-                        Chapters = group.ToList()
+                        Chapters = group
+                            .OrderBy(c => c.ChapterNumber)
+                            .ToList()
                     })
+                    .OrderBy(g => g.Arc?.ArcNumber ?? int.MaxValue)
                     .ToList();
 
                 return groupedResults;
@@ -181,7 +185,7 @@ namespace AlbaVulpes.API.Repositories.Resource
                 {
                     if (!state)
                     {
-                        throw new Exception("Chapteris not published yet");
+                        throw new Exception("Chapter is not published yet");
                     }
 
                     chapterToPublish.PublishDate = DateTime.UtcNow;
@@ -192,6 +196,36 @@ namespace AlbaVulpes.API.Repositories.Resource
                 await session.SaveChangesAsync();
 
                 return chapterToPublish;
+            }
+        }
+
+        public async Task<Chapter> Reorder(Guid id, int index)
+        {
+            using (var session = _store.OpenSession())
+            {
+                var chapterToReorder = await session.LoadAsync<Chapter>(id);
+
+                if (chapterToReorder == null)
+                {
+                    return null;
+                }
+
+                var allChaptersForComic = await session.Query<Chapter>()
+                    .Where(p => p.ArcId == chapterToReorder.ArcId)
+                    .OrderBy(p => p.ChapterNumber)
+                    .ToListAsync();
+
+                var chaptersList = allChaptersForComic.ToList();
+
+                chaptersList.Remove(chapterToReorder);
+                chaptersList.Insert(index, chapterToReorder);
+
+                chaptersList.Reorder(p => p.ChapterNumber);
+
+                session.Update(chaptersList.ToArray());
+                await session.SaveChangesAsync();
+
+                return chapterToReorder;
             }
         }
     }
