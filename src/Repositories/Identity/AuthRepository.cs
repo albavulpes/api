@@ -72,7 +72,7 @@ namespace AlbaVulpes.API.Repositories.Identity
             using (var session = _store.OpenSession())
             {
                 var user = await session.Query<User>()
-                    .Where(u => u.Email == info.Email)
+                    .Where(u => u.Email == info.Email && u.Roles.Contains(Role.Creator))
                     .FirstOrDefaultAsync();
 
                 // User doesn't exist, reject login
