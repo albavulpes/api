@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace AlbaVulpes.API.Controllers
     {
         private readonly IFilesService _filesService;
 
+        private readonly string[] _supportedFileTypes = { "image/bmp", "image/jpg", "image/jpeg", "image/png", "image/gif" };
+
         public ImageController(IUnitOfWork unitOfWork, IValidatorService validator, IFilesService filesService) : base(unitOfWork, validator)
         {
             _filesService = filesService;
@@ -35,13 +38,45 @@ namespace AlbaVulpes.API.Controllers
                 return BadRequest("File not provided or unreadable");
             }
 
-            var contentType = file.ContentType;
-            var supportedFileTypes = new[] { "image/bmp", "image/jpg", "image/jpeg", "image/png", "image/gif" };
-
-            if (!supportedFileTypes.Contains(contentType))
+            if (!_supportedFileTypes.Contains(file.ContentType))
             {
-                return BadRequest($"Content Type {contentType} not supported");
+                return BadRequest($"Content Type {file.ContentType} not supported");
             }
+
+            var imageResponse = await UploadImage(file);
+
+            return Ok(imageResponse);
+        }
+
+        [Authorize(Roles = "Creator")]
+        [HttpPost("multiple")]
+        public async Task<IActionResult> CreateMultiple(List<IFormFile> files)
+        {
+            if (files == null || files.Count <= 0)
+            {
+                return BadRequest("Files not provided or unreadable");
+            }
+
+            var imageResponses = new List<ImageResponse>();
+
+            foreach (var file in files)
+            {
+                if (!_supportedFileTypes.Contains(file.ContentType))
+                {
+                    return BadRequest($"Content Type {file.ContentType} not supported");
+                }
+
+                var imageResponse = await UploadImage(file);
+
+                imageResponses.Add(imageResponse);
+            }
+
+            return Ok(imageResponses);
+        }
+
+        private async Task<ImageResponse> UploadImage(IFormFile file)
+        {
+            var contentType = file.ContentType;
 
             using (var imageFileStream = new MemoryStream())
             {
@@ -51,12 +86,12 @@ namespace AlbaVulpes.API.Controllers
                 {
                     var fileKey = $"{S3StorageOptions.ImageUploadsKeyPrefix}/image-{Guid.NewGuid()}.jpg";
 
-                    var originalImageUrl = await _filesService.UploadFileAsync(fileKey, processedImageStream);
+                    var uploadedImageUrl = await _filesService.UploadFileAsync(fileKey, processedImageStream);
 
-                    return Ok(new ImageResponse
+                    return new ImageResponse
                     {
-                        ImagePath = originalImageUrl
-                    });
+                        ImagePath = uploadedImageUrl
+                    };
                 }
             }
         }
