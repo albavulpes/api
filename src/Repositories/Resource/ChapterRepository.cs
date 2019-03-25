@@ -153,6 +153,9 @@ namespace AlbaVulpes.API.Repositories.Resource
                     return null;
                 }
 
+                session.DeleteWhere<Page>(p => p.ChapterId == data.Id);
+                await session.SaveChangesAsync();
+
                 session.Delete<Chapter>(id);
                 await session.SaveChangesAsync();
 
