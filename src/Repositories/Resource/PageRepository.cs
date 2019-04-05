@@ -6,6 +6,7 @@ using AlbaVulpes.API.Base;
 using AlbaVulpes.API.Helpers;
 using AlbaVulpes.API.Models.Resource;
 using Marten;
+using Microsoft.AspNetCore.Identity.UI.Pages.Internal.Account;
 
 namespace AlbaVulpes.API.Repositories.Resource
 {
@@ -35,6 +36,22 @@ namespace AlbaVulpes.API.Repositories.Resource
                 return sortedPages;
             }
         }
+        public async Task<Page> GetPageByPageNumber(Guid chapterId, int pageNumber)
+        {
+            if (chapterId == Guid.Empty)
+            {
+                return null;
+            }
+
+            using (var session = _store.QuerySession())
+            {
+                var page = await session.Query<Page>()
+                    .Where(p => p.ChapterId == chapterId && p.PageNumber == pageNumber)
+                    .FirstOrDefaultAsync();
+
+                return page;
+            }
+        }
 
         public async Task<Page> Get(Guid id)
         {
@@ -43,6 +60,36 @@ namespace AlbaVulpes.API.Repositories.Resource
                 var data = await session.LoadAsync<Page>(id);
 
                 return data;
+            }
+        }
+
+        public async Task<Page> GetPrevious(Guid id)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var data = await session.LoadAsync<Page>(id);
+
+                // TODO: Better logic for switching chapters
+                var nextPage = await session.Query<Page>()
+                    .Where(p => p.ChapterId == data.ChapterId && p.PageNumber == data.PageNumber - 1)
+                    .FirstOrDefaultAsync();
+
+                return nextPage;
+            }
+        }
+
+        public async Task<Page> GetNext(Guid id)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var data = await session.LoadAsync<Page>(id);
+
+                // TODO: Better logic for switching chapters
+                var nextPage = await session.Query<Page>()
+                    .Where(p => p.ChapterId == data.ChapterId && p.PageNumber == data.PageNumber + 1)
+                    .FirstOrDefaultAsync();
+
+                return nextPage;
             }
         }
 

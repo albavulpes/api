@@ -22,8 +22,20 @@ namespace AlbaVulpes.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllForChapter(Guid chapterId)
+        public async Task<IActionResult> Get(Guid chapterId, int? pageNumber)
         {
+            if (pageNumber != null)
+            {
+                var page = await UnitOfWork.GetRepository<PageRepository>().GetPageByPageNumber(chapterId, pageNumber.Value);
+
+                if (page == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(page);
+            }
+
             var pages = await UnitOfWork.GetRepository<PageRepository>().GetAllPagesForChapter(chapterId);
 
             if (pages == null)
@@ -38,6 +50,32 @@ namespace AlbaVulpes.API.Controllers
         public async Task<IActionResult> Get(Guid id)
         {
             var page = await UnitOfWork.GetRepository<PageRepository>().Get(id);
+
+            if (page == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(page);
+        }
+
+        [HttpGet("{id}/previous")]
+        public async Task<IActionResult> GetPrevious(Guid id)
+        {
+            var page = await UnitOfWork.GetRepository<PageRepository>().GetPrevious(id);
+
+            if (page == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(page);
+        }
+
+        [HttpGet("{id}/next")]
+        public async Task<IActionResult> GetNext(Guid id)
+        {
+            var page = await UnitOfWork.GetRepository<PageRepository>().GetNext(id);
 
             if (page == null)
             {
